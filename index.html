@@ -3,246 +3,210 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mindanao Grid Mesh — Sub-Transmission Load Flow & Hydropower Telemetry</title>
-  <meta name="description" content="An interactive grid telemetry console modeling Northern Mindanao 138kV/69kV substations, Agus-Pulangi hydropower flow, and grid islanding resilience.">
+  <title>Mindanao Grid Mesh — Electrical Substation & Transmission Topology</title>
+  <meta name="description" content="A minimalist single-line diagram and sub-transmission load-flow console for Northern Mindanao 138kV/69kV substations and hydropower telemetry.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- Top Industrial Telemetry Header -->
-  <header class="grid-header">
-    <div class="header-left">
-      <div class="grid-logo">
-        <span class="logo-icon">⚡</span>
-        <div class="logo-meta">
-          <span class="logo-sub">NORTHERN MINDANAO POWER DISPATCH</span>
-          <span class="logo-main">MINDANAO GRID MESH &bull; SCADA 138kV</span>
-        </div>
-      </div>
-      <div class="frequency-meter">
-        <span class="freq-label">SYSTEM FREQ</span>
-        <span class="freq-val" id="sysFreq">59.98 Hz</span>
-        <span class="freq-status text-ok">STABLE &bull; SYNCHRONIZED</span>
+  <!-- Minimalist Precision Header -->
+  <header class="engineering-bar">
+    <div class="bar-brand">
+      <span class="brand-id">MINDANAO GRID MESH &bull; 138kV/69kV</span>
+      <span class="brand-separator">/</span>
+      <div class="tele-frequency">
+        <span class="status-dot" id="freqDot"></span>
+        <span id="sysFreq">59.98 Hz</span>
+        <span style="color: var(--text-muted);">(NOMINAL)</span>
       </div>
     </div>
 
-    <div class="header-right">
-      <div class="grid-stats-group">
-        <div class="stat-pill">
-          <span class="sp-lbl">REGIONAL DEMAND</span>
-          <span class="sp-val" id="totalDemand">1,482 MW</span>
-        </div>
-        <div class="stat-pill">
-          <span class="sp-lbl">HYDRO SPINNING RESERVE</span>
-          <span class="sp-val text-amber" id="spinningReserve">340 MW</span>
-        </div>
-        <div class="stat-pill">
-          <span class="sp-lbl">GRID STABILITY</span>
-          <span class="sp-val text-emerald" id="gridHealth">98.4%</span>
-        </div>
-      </div>
+    <div class="bar-metrics">
+      <div><span class="metric-unit">TOTAL DEMAND:</span><span class="metric-val">1,482 MW</span></div>
+      <div><span class="metric-unit">HYDRO RESERVE:</span><span class="metric-val">340 MW</span></div>
+      <div><span class="metric-unit">BUS AVAILABILITY:</span><span class="metric-val">99.8%</span></div>
     </div>
   </header>
 
-  <!-- Main Industrial Console -->
-  <main class="console-body">
+  <!-- Workspace Shell -->
+  <main class="workspace-layout">
     
-    <!-- Left: Substation Selector & Single-Line Diagram -->
-    <section class="viewport-diagram">
+    <!-- Left: Single-Line Schematic -->
+    <section class="schematic-viewport">
       
-      <!-- Substation Selector Carousel -->
-      <div class="substation-selector">
-        <span class="selector-kicker">SELECT TELEMETRY NODE:</span>
-        <div class="substation-scroll" id="substationTrack">
-          <button class="node-chip active" onclick="selectSubstation('cdo-lugait', this)">Lugait 138kV (Industrial)</button>
-          <button class="node-chip" onclick="selectSubstation('cdo-cugman', this)">Cugman 69kV (CDO Central)</button>
-          <button class="node-chip" onclick="selectSubstation('agus-4', this)">Agus IV Hydro (Balo-i)</button>
-          <button class="node-chip" onclick="selectSubstation('pulangi-4', this)">Pulangi IV Hydro (Maramag)</button>
-          <button class="node-chip" onclick="selectSubstation('tagoloan', this)">PHIVIDEC Tagoloan 138kV</button>
-          <button class="node-chip" onclick="selectSubstation('cdo-carmen', this)">Carmen 69kV Substation</button>
-          <button class="node-chip" onclick="selectSubstation('bวรร', this)">Opol Sub-transmission 69kV</button>
-        </div>
-      </div>
+      <!-- Substation Switcher Tabs -->
+      <nav class="schematic-tabs" id="substationTabs">
+        <button class="tab-item active" onclick="selectSubstation('cdo-lugait', this)">Lugait 138kV</button>
+        <button class="tab-item" onclick="selectSubstation('cdo-carmen', this)">Carmen 69kV (CDO)</button>
+        <button class="tab-item" onclick="selectSubstation('cdo-cugman', this)">Cugman 69kV (CEPALCO)</button>
+        <button class="tab-item" onclick="selectSubstation('agus-4', this)">Agus IV Hydro</button>
+        <button class="tab-item" onclick="selectSubstation('pulangi-4', this)">Pulangi IV Hydro</button>
+        <button class="tab-item" onclick="selectSubstation('tagoloan', this)">Tagoloan 138kV</button>
+        <button class="tab-item" onclick="selectSubstation('opol', this)">Opol 69kV</button>
+      </nav>
 
-      <!-- Interactive Single-Line SVG Diagram -->
-      <div class="sld-canvas-wrapper">
-        <svg id="sldSvg" viewBox="0 0 960 620" class="sld-svg" xmlns="http://www.w3.org/2000/svg">
-          <defs>
-            <!-- High voltage bus glow -->
-            <filter id="busGlow" x="-10%" y="-20%" width="120%" height="140%">
-              <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#f59e0b" flood-opacity="0.4"/>
-            </filter>
-            <filter id="hydroGlow" x="-10%" y="-20%" width="120%" height="140%">
-              <feDropShadow dx="0" dy="0" stdDeviation="4" flood-color="#38bdf8" flood-opacity="0.4"/>
-            </filter>
-          </defs>
+      <!-- SVG Single-Line Schematic -->
+      <div class="schematic-stage">
+        <svg id="sldSvg" viewBox="0 0 920 580" class="schematic-svg" xmlns="http://www.w3.org/2000/svg">
+          
+          <!-- Subtle Grid Background -->
+          <line x1="0" y1="200" x2="920" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
+          <line x1="0" y1="400" x2="920" y2="400" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
 
-          <!-- Blueprint Grid Background -->
-          <pattern id="blueprintGrid" width="40" height="40" patternUnits="userSpaceOnUse">
-            <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(245, 158, 11, 0.05)" stroke-width="1"/>
-          </pattern>
-          <rect width="960" height="620" fill="url(#blueprintGrid)"/>
+          <!-- 138kV Regional Backbone Transmission Line -->
+          <line x1="60" y1="200" x2="860" y2="200" class="line-138kv"/>
+          <text x="65" y="188" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="9" letter-spacing="1.5">138kV REGIONAL TRANSMISSION TRUNK</text>
 
-          <!-- 138kV Backbone Transmission Highway (Horizontal Trunks) -->
-          <!-- Trunk Line 1: Agus Hydro Cascade to Cagayan de Oro -->
-          <line x1="80" y1="210" x2="880" y2="210" class="transmission-bus bus-138kv" filter="url(#busGlow)"/>
-          <text x="85" y="198" class="bus-lbl">138kV NORTHERN MINDANAO REGIONAL BACKBONE TRUNK</text>
+          <!-- 69kV Urban Distribution Bus -->
+          <line x1="200" y1="400" x2="720" y2="400" class="line-69kv"/>
+          <text x="205" y="418" fill="#64748b" font-family="'JetBrains Mono', monospace" font-size="9" letter-spacing="1.5">69kV URBAN SUB-TRANSMISSION RING</text>
 
-          <!-- 69kV Sub-transmission Distribution Ring (CDO & Industrial Ring) -->
-          <line x1="220" y1="420" x2="740" y2="420" class="transmission-bus bus-69kv"/>
-          <text x="225" y="440" class="bus-lbl bus-lbl-69">69kV CDO URBAN DISTRIBUTION & SUB-TRANSMISSION RING</text>
+          <!-- Vertical Intertie Drops -->
+          <line x1="220" y1="200" x2="220" y2="400" class="feeder-drop"/>
+          <line x1="460" y1="200" x2="460" y2="400" class="feeder-drop"/>
+          <line x1="700" y1="200" x2="700" y2="400" class="feeder-drop"/>
 
-          <!-- Power Flow Interconnect Drop Lines -->
-          <line x1="220" y1="210" x2="220" y2="420" class="tie-line"/>
-          <line x1="520" y1="210" x2="520" y2="420" class="tie-line"/>
-          <line x1="740" y1="210" x2="740" y2="420" class="tie-line"/>
+          <!-- Substation Schematic Blocks -->
 
-          <!-- Animated Load Flow Packets (SVG Circles animating along tie lines) -->
-          <circle cx="220" cy="315" r="4" class="flow-particle" />
-          <circle cx="520" cy="315" r="4" class="flow-particle" />
-          <circle cx="740" cy="315" r="4" class="flow-particle" />
-
-          <!-- ============================================== -->
-          <!-- INTERACTIVE SUBSTATION BUSES & GENERATION HUBS -->
-          <!-- ============================================== -->
-
-          <!-- 1. Agus IV Hydro Generation (West) -->
-          <g class="substation-node" id="sub-agus-4" onclick="selectSubstation('agus-4')">
-            <rect x="70" y="140" width="130" height="60" class="substation-box box-hydro" filter="url(#hydroGlow)"/>
-            <text x="80" y="162" class="sub-title">💧 AGUS IV HYDRO</text>
-            <text x="80" y="180" class="sub-meta">Capacity: 158 MW</text>
-            <circle cx="135" cy="210" r="6" class="breaker-point breaker-closed"/>
+          <!-- 1. Agus IV Hydro -->
+          <g class="substation-block" id="sub-agus-4" onclick="selectSubstation('agus-4')">
+            <rect x="60" y="130" width="120" height="54" class="sub-rect"/>
+            <text x="72" y="152" class="sub-name">AGUS IV HYDRO</text>
+            <text x="72" y="168" class="sub-stat">158 MW &bull; Balo-i</text>
+            <circle cx="120" cy="200" r="5" class="breaker-symbol breaker-closed" id="brk-agus"/>
           </g>
 
-          <!-- 2. Lugait 138kV Industrial Substation -->
-          <g class="substation-node active" id="sub-cdo-lugait" onclick="selectSubstation('cdo-lugait')">
-            <rect x="230" y="140" width="150" height="60" class="substation-box box-active"/>
-            <text x="240" y="162" class="sub-title">⚡ LUGAIT 138kV SUB</text>
-            <text x="240" y="180" class="sub-meta">Load: 84 MW (Heavy)</text>
-            <circle cx="305" cy="210" r="6" class="breaker-point breaker-closed"/>
+          <!-- 2. Lugait 138kV -->
+          <g class="substation-block active" id="sub-cdo-lugait" onclick="selectSubstation('cdo-lugait')">
+            <rect x="220" y="130" width="140" height="54" class="sub-rect"/>
+            <text x="232" y="152" class="sub-name">LUGAIT 138kV</text>
+            <text x="232" y="168" class="sub-stat">Load: 84 MW</text>
+            <circle cx="290" cy="200" r="5" class="breaker-symbol breaker-closed" id="brk-lugait"/>
           </g>
 
-          <!-- 3. PHIVIDEC Tagoloan 138kV Substation -->
-          <g class="substation-node" id="sub-tagoloan" onclick="selectSubstation('tagoloan')">
-            <rect x="420" y="140" width="160" height="60" class="substation-box"/>
-            <text x="430" y="162" class="sub-title">⚡ PHIVIDEC 138kV</text>
-            <text x="430" y="180" class="sub-meta">Industrial Estate: 112 MW</text>
-            <circle cx="500" cy="210" r="6" class="breaker-point breaker-closed"/>
+          <!-- 3. Tagoloan 138kV -->
+          <g class="substation-block" id="sub-tagoloan" onclick="selectSubstation('tagoloan')">
+            <rect x="400" y="130" width="140" height="54" class="sub-rect"/>
+            <text x="412" y="152" class="sub-name">TAGOLOAN 138kV</text>
+            <text x="412" y="168" class="sub-stat">PHIVIDEC &bull; 112 MW</text>
+            <circle cx="470" cy="200" r="5" class="breaker-symbol breaker-closed" id="brk-tagoloan"/>
           </g>
 
-          <!-- 4. Pulangi IV Hydro Generation (Bukidnon East) -->
-          <g class="substation-node" id="sub-pulangi-4" onclick="selectSubstation('pulangi-4')">
-            <rect x="620" y="140" width="150" height="60" class="substation-box box-hydro" filter="url(#hydroGlow)"/>
-            <text x="630" y="162" class="sub-title">💧 PULANGI IV HYDRO</text>
-            <text x="630" y="180" class="sub-meta">Capacity: 255 MW</text>
-            <circle cx="695" cy="210" r="6" class="breaker-point breaker-closed"/>
+          <!-- 4. Pulangi IV Hydro -->
+          <g class="substation-block" id="sub-pulangi-4" onclick="selectSubstation('pulangi-4')">
+            <rect x="580" y="130" width="140" height="54" class="sub-rect"/>
+            <text x="592" y="152" class="sub-name">PULANGI IV HYDRO</text>
+            <text x="592" y="168" class="sub-stat">255 MW &bull; Bukidnon</text>
+            <circle cx="650" cy="200" r="5" class="breaker-symbol breaker-closed" id="brk-pulangi"/>
           </g>
 
-          <!-- 5. Opol Substation (69kV Ring West) -->
-          <g class="substation-node" id="sub-opol" onclick="selectSubstation('opol')">
-            <rect x="180" y="450" width="130" height="60" class="substation-box"/>
-            <text x="190" y="472" class="sub-title">⚡ OPOL 69kV SUB</text>
-            <text x="190" y="490" class="sub-meta">Feeder Load: 28 MW</text>
-            <circle cx="245" cy="420" r="6" class="breaker-point breaker-closed"/>
+          <!-- 5. Opol 69kV -->
+          <g class="substation-block" id="sub-opol" onclick="selectSubstation('opol')">
+            <rect x="180" y="430" width="120" height="54" class="sub-rect"/>
+            <text x="192" y="452" class="sub-name">OPOL 69kV</text>
+            <text x="192" y="468" class="sub-stat">Feeder: 28 MW</text>
+            <circle cx="240" cy="400" r="5" class="breaker-symbol breaker-closed" id="brk-opol"/>
           </g>
 
-          <!-- 6. Carmen 69kV Substation (CDO Urban Hub) -->
-          <g class="substation-node" id="sub-cdo-carmen" onclick="selectSubstation('cdo-carmen')">
-            <rect x="360" y="450" width="150" height="60" class="substation-box"/>
-            <text x="370" y="472" class="sub-title">⚡ CARMEN 69kV (CDO)</text>
-            <text x="370" y="490" class="sub-meta">Commercial Load: 62 MW</text>
-            <circle cx="435" cy="420" r="6" class="breaker-point breaker-closed"/>
+          <!-- 6. Carmen 69kV (CDO Urban Hub) -->
+          <g class="substation-block" id="sub-cdo-carmen" onclick="selectSubstation('cdo-carmen')">
+            <rect x="340" y="430" width="150" height="54" class="sub-rect"/>
+            <text x="352" y="452" class="sub-name">CARMEN 69kV (CDO)</text>
+            <text x="352" y="468" class="sub-stat">City Center &bull; 62 MW</text>
+            <circle cx="415" cy="400" r="5" class="breaker-symbol breaker-closed" id="brk-carmen"/>
           </g>
 
-          <!-- 7. Cugman 69kV Substation (CDO East) -->
-          <g class="substation-node" id="sub-cdo-cugman" onclick="selectSubstation('cdo-cugman')">
-            <rect x="560" y="450" width="150" height="60" class="substation-box"/>
-            <text x="570" y="472" class="sub-title">⚡ CUGMAN 69kV SUB</text>
-            <text x="570" y="490" class="sub-meta">Residential Load: 46 MW</text>
-            <circle cx="635" cy="420" r="6" class="breaker-point breaker-closed"/>
+          <!-- 7. Cugman 69kV (CEPALCO) -->
+          <g class="substation-block" id="sub-cdo-cugman" onclick="selectSubstation('cdo-cugman')">
+            <rect x="530" y="430" width="150" height="54" class="sub-rect"/>
+            <text x="542" y="452" class="sub-name">CUGMAN 69kV</text>
+            <text x="542" y="468" class="sub-stat">CEPALCO &bull; 46 MW</text>
+            <circle cx="605" cy="400" r="5" class="breaker-symbol breaker-closed" id="brk-cugman"/>
           </g>
 
         </svg>
       </div>
 
-      <!-- Bottom Legend -->
-      <div class="sld-footer-legend">
-        <span class="leg-item"><span class="color-dot dot-138"></span> 138kV Backbone Transmission</span>
-        <span class="leg-item"><span class="color-dot dot-69"></span> 69kV Sub-transmission Feeder</span>
-        <span class="leg-item"><span class="color-dot dot-hydro"></span> Run-of-River Hydro Station</span>
-        <span class="leg-item"><span class="color-dot dot-closed"></span> Air-Break Circuit Breaker (Closed)</span>
-      </div>
+      <!-- Schematic Legend -->
+      <footer class="schematic-legend">
+        <div class="legend-entry"><span class="swatch-138"></span> 138kV Backbone Line</div>
+        <div class="legend-entry"><span class="swatch-69"></span> 69kV Distribution Ring</div>
+        <div class="legend-entry"><span class="swatch-green"></span> Breaker Closed (Normal)</div>
+      </footer>
+
     </section>
 
-    <!-- Right: Telemetry Diagnostic & Islanding Contingency Simulator -->
-    <aside class="telemetry-dossier">
-      
-      <div class="dossier-inner">
-        <!-- Node Header -->
-        <div class="node-hero">
-          <span class="substation-tag" id="substationTag">138kV STEP-DOWN BULK SUBSTATION &bull; CDO METRO WEST</span>
-          <h2 id="substationTitle">Lugait Substation (138kV / 69kV)</h2>
-          <p class="substation-geo" id="substationGeo">Misamis Oriental Border &bull; Intertied to Agus-Pulangi Grid &bull; 8°20'N 124°15'E</p>
+    <!-- Right: Clean Minimalist Telemetry Ledger -->
+    <aside class="telemetry-ledger">
+      <div class="ledger-content">
+        
+        <div class="ledger-header">
+          <span class="ledger-kicker" id="substationTag">BULK SUB-TRANSMISSION STEP-DOWN</span>
+          <h2 class="ledger-title" id="substationTitle">Lugait Substation (138kV / 69kV)</h2>
+          <p class="ledger-coord" id="substationGeo">Misamis Oriental Border &bull; 8°20'N 124°15'E</p>
         </div>
 
-        <!-- Telemetry Live Gauges -->
-        <div class="gauges-grid">
-          <div class="gauge-card">
-            <span class="g-lbl">BUS VOLTAGE</span>
-            <span class="g-val text-amber" id="gVoltage">137.8 kV</span>
-            <span class="g-sub">Nominal: 138.0 kV (0.998 p.u.)</span>
-          </div>
-          <div class="gauge-card">
-            <span class="g-lbl">ACTIVE POWER FLOW</span>
-            <span class="g-val" id="gPower">84.2 MW</span>
-            <span class="g-sub">Transformer Rating: 100 MVA</span>
-          </div>
-          <div class="gauge-card">
-            <span class="g-lbl">POWER FACTOR</span>
-            <span class="g-val text-emerald" id="gPF">0.96 Lag</span>
-            <span class="g-sub">Reactive: 24.5 MVAR</span>
-          </div>
-          <div class="gauge-card">
-            <span class="g-lbl">TRANSFORMER TEMP</span>
-            <span class="g-val" id="gTemp">58.4 °C</span>
-            <span class="g-sub">Cooling Fans: Stage 1 Auto</span>
-          </div>
-        </div>
+        <!-- Telemetry Data Table -->
+        <table class="data-table">
+          <tbody>
+            <tr>
+              <td class="td-label">Bus Voltage</td>
+              <td class="td-value" id="gVoltage">137.8 kV</td>
+            </tr>
+            <tr>
+              <td class="td-label">Active Power Flow</td>
+              <td class="td-value" id="gPower">84.2 MW</td>
+            </tr>
+            <tr>
+              <td class="td-label">Power Factor</td>
+              <td class="td-value" id="gPF">0.96 Lag</td>
+            </tr>
+            <tr>
+              <td class="td-label">Transformer Temperature</td>
+              <td class="td-value" id="gTemp">58.4 °C</td>
+            </tr>
+          </tbody>
+        </table>
 
-        <!-- Contingency Islanding Simulator -->
-        <div class="contingency-simulator-card">
-          <div class="contingency-header">
-            <h4>Grid Islanding & Tripping Simulator</h4>
-            <span class="contingency-status status-normal" id="gridStatusPill">Grid Synchronized</span>
+        <!-- Contingency Controller -->
+        <div class="contingency-box">
+          <div class="box-title-row">
+            <span class="box-title">N-1 CONTINGENCY TEST</span>
+            <span class="badge-state" id="gridStatusBadge">NORMAL</span>
           </div>
-          <p class="contingency-desc">
-            Simulate a high-impact N-1 line trip on the 138kV Agus transmission corridor to evaluate automatic load shedding and hydropower spinning reserve response:
+          <p class="box-summary">
+            Simulate a transmission trip on the primary 138kV tie line to test automated under-frequency response and hydropower spinning reserve dispatch:
           </p>
-
-          <div class="sim-actions">
-            <button class="btn-trip" id="tripBtn" onclick="toggleLineTrip()">⚡ Trip 138kV Tie Line (N-1)</button>
-            <button class="btn-reset" onclick="restoreGridState()">⟲ Restore Intertie</button>
+          <div class="box-controls">
+            <button class="control-btn btn-trip" id="tripBtn" onclick="toggleLineTrip()">Trip 138kV Tie Line</button>
+            <button class="control-btn" onclick="restoreGridState()">Reset System</button>
           </div>
-
-          <div class="contingency-log" id="contingencyLog">
-            <div class="log-entry"><strong>00:00:00</strong> &bull; Regional load-flow balanced; all circuit breakers closed.</div>
-            <div class="log-entry"><strong>00:00:00</strong> &bull; Agus IV & Pulangi IV supplying 413 MW firm baseload.</div>
+          <div class="event-log" id="eventLog">
+            <div><span>[00:00:00]</span> All interties synchronized and carrying nominal load.</div>
           </div>
         </div>
 
-        <!-- Feeders & Intertied Industrial Loads -->
-        <div class="feeders-list-wrap">
-          <h4>Sub-transmission Outgoing Feeders</h4>
-          <div class="feeders-list" id="feedersList">
-            <!-- Rendered dynamically -->
-          </div>
+        <!-- Outgoing Feeders -->
+        <div class="feeders-section">
+          <h4>OUTGOING FEEDER ASSIGNMENTS</h4>
+          <table class="feeder-table">
+            <thead>
+              <tr>
+                <th>FEEDER / RECEPTOR</th>
+                <th>VOLTAGE</th>
+                <th style="text-align:right;">LOAD</th>
+              </tr>
+            </thead>
+            <tbody id="feedersTableBody">
+              <!-- Rendered via JS -->
+            </tbody>
+          </table>
         </div>
 
       </div>
-
     </aside>
 
   </main>
