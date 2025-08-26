@@ -31,7 +31,7 @@ const SUBSTATIONS = {
   },
   "cdo-cugman": {
     tag: "69kV / 13.8kV DISTRIBUTION HUB • CDO CENTRAL METRO",
-    title: "Cugman 69kV Substation (CEPALCO Intertie)",
+    title: "Cugman 69kV Substation (CDO East Intertie)",
     geo: "Cagayan de Oro East • Industrial & Commercial Feeders • 8°28'N 124°41'E",
     voltage: "68.9 kV",
     power: "46.4 MW",
@@ -214,3 +214,4 @@ function restoreGridState() {
     <div><span>[${now}]</span> System synchronized; circuit breakers reclosed.</div>
   `;
 }
+

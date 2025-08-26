@@ -9,7 +9,7 @@
 
 Northern Mindanao hosts the historical baseload clean energy anchor of the Mindanao power grid—the **Agus River Hydropower Cascade** and the **Pulangi IV Hydroelectric Reservoir**. 
 
-**Mindanao Grid Mesh** provides power systems engineers and regional distribution utilities (such as CEPALCO and MORESCO) with an interactive single-line diagram (SLD) console to inspect bus voltages, active power flows, power factors, and automated under-frequency load shedding (UFLS) during simulated N-1 transmission line contingencies.
+**Mindanao Grid Mesh** provides power systems engineers and regional distribution utilities (such as regional distribution utilities and electric cooperatives) with an interactive single-line diagram (SLD) console to inspect bus voltages, active power flows, power factors, and automated under-frequency load shedding (UFLS) during simulated N-1 transmission line contingencies.
 
 ---
 
@@ -20,7 +20,7 @@ Northern Mindanao hosts the historical baseload clean energy anchor of the Minda
    - Dynamic power flow indicators and circuit breaker status indicators.
    - Live telemetry inspect nodes across:
      - **Lugait 138kV Substation** (Heavy cement industrial load)
-     - **Cugman 69kV Substation** (CEPALCO urban commercial ring)
+     - **Cugman 69kV Substation** (urban commercial distribution ring)
      - **Carmen 69kV Substation** (Cagayan de Oro City Center)
      - **Agus IV Hydroelectric Station** (Balo-i, Lanao del Norte)
      - **Pulangi IV Hydroelectric Station** (Maramag, Bukidnon)
@@ -56,3 +56,4 @@ cd mindanao-grid-mesh
 # Open index.html in any browser
 open index.html
 ```
+

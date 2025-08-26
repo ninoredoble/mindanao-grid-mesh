@@ -41,7 +41,7 @@
       <nav class="schematic-tabs" id="substationTabs">
         <button class="tab-item active" onclick="selectSubstation('cdo-lugait', this)">Lugait 138kV</button>
         <button class="tab-item" onclick="selectSubstation('cdo-carmen', this)">Carmen 69kV (CDO)</button>
-        <button class="tab-item" onclick="selectSubstation('cdo-cugman', this)">Cugman 69kV (CEPALCO)</button>
+        <button class="tab-item" onclick="selectSubstation('cdo-cugman', this)">Cugman 69kV (CDO East)</button>
         <button class="tab-item" onclick="selectSubstation('agus-4', this)">Agus IV Hydro</button>
         <button class="tab-item" onclick="selectSubstation('pulangi-4', this)">Pulangi IV Hydro</button>
         <button class="tab-item" onclick="selectSubstation('tagoloan', this)">Tagoloan 138kV</button>
@@ -119,11 +119,11 @@
             <circle cx="415" cy="400" r="5" class="breaker-symbol breaker-closed" id="brk-carmen"/>
           </g>
 
-          <!-- 7. Cugman 69kV (CEPALCO) -->
+          <!-- 7. Cugman 69kV (CDO East) -->
           <g class="substation-block" id="sub-cdo-cugman" onclick="selectSubstation('cdo-cugman')">
             <rect x="530" y="430" width="150" height="54" class="sub-rect"/>
             <text x="542" y="452" class="sub-name">CUGMAN 69kV</text>
-            <text x="542" y="468" class="sub-stat">CEPALCO &bull; 46 MW</text>
+            <text x="542" y="468" class="sub-stat">Distribution &bull; 46 MW</text>
             <circle cx="605" cy="400" r="5" class="breaker-symbol breaker-closed" id="brk-cugman"/>
           </g>
 
@@ -214,3 +214,4 @@
   <script src="app.js"></script>
 </body>
 </html>
+
