@@ -3,204 +3,252 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Mindanao Grid Mesh — Electrical Substation & Transmission Topology</title>
-  <meta name="description" content="A minimalist single-line diagram and sub-transmission load-flow console for Northern Mindanao 138kV/69kV substations and hydropower telemetry.">
+  <title>Mindanao Grid Mesh — 138kV/69kV Mimic Board & Substation Telemetry Bay</title>
+  <meta name="description" content="An authentic industrial control room mimic board modeling Northern Mindanao's 138kV/69kV electrical transmission network, hydro cascade load flows, and switchgear breaker trip sequences.">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
 
-  <!-- Minimalist Precision Header -->
-  <header class="engineering-bar">
-    <div class="bar-brand">
-      <span class="brand-id">MINDANAO GRID MESH &bull; 138kV/69kV</span>
-      <span class="brand-separator">/</span>
-      <div class="tele-frequency">
-        <span class="status-dot" id="freqDot"></span>
-        <span id="sysFreq">59.98 Hz</span>
-        <span style="color: var(--text-muted);">(NOMINAL)</span>
-      </div>
+  <!-- Physical Control Room Header Fascia -->
+  <header class="mimic-fascia">
+    <div class="fascia-title-block">
+      <div class="stencil-label">MINDANAO GRID MESH &bull; 138kV / 69kV MIMIC BOARD</div>
+      <span style="font-size: 10px; color: #64748b;">SYSTEM FREQ: 60.00 Hz NOMINAL</span>
     </div>
 
-    <div class="bar-metrics">
-      <div><span class="metric-unit">TOTAL DEMAND:</span><span class="metric-val">1,482 MW</span></div>
-      <div><span class="metric-unit">HYDRO RESERVE:</span><span class="metric-val">340 MW</span></div>
-      <div><span class="metric-unit">BUS AVAILABILITY:</span><span class="metric-val">99.8%</span></div>
+    <div class="fascia-indicators">
+      <!-- Physical Annunciator Light Box -->
+      <div class="annunciator-panel">
+        <div class="annunciator-box lamp-active-green" id="annSync">GRID SYNC<br>IN-PHASE</div>
+        <div class="annunciator-box" id="annTrip">TRIP RELAY<br>50/51 ALARM</div>
+        <div class="annunciator-box" id="annUfls">UFLS STAGE 1<br>ARMED</div>
+        <div class="annunciator-box lamp-active-green" id="annHydro">HYDRO BASE<br>DISPATCH</div>
+      </div>
     </div>
   </header>
 
-  <!-- Workspace Shell -->
-  <main class="workspace-layout">
+  <!-- Mimic Board Layout -->
+  <main class="control-room-grid">
     
-    <!-- Left: Single-Line Schematic -->
-    <section class="schematic-viewport">
-      
-      <!-- Substation Switcher Tabs -->
-      <nav class="schematic-tabs" id="substationTabs">
-        <button class="tab-item active" onclick="selectSubstation('cdo-lugait', this)">Lugait 138kV</button>
-        <button class="tab-item" onclick="selectSubstation('cdo-carmen', this)">Carmen 69kV (CDO)</button>
-        <button class="tab-item" onclick="selectSubstation('cdo-cugman', this)">Cugman 69kV (CDO East)</button>
-        <button class="tab-item" onclick="selectSubstation('agus-4', this)">Agus IV Hydro</button>
-        <button class="tab-item" onclick="selectSubstation('pulangi-4', this)">Pulangi IV Hydro</button>
-        <button class="tab-item" onclick="selectSubstation('tagoloan', this)">Tagoloan 138kV</button>
-        <button class="tab-item" onclick="selectSubstation('opol', this)">Opol 69kV</button>
-      </nav>
+    <!-- Left: Hardwired Mimic Tile Board -->
+    <section class="mimic-board-frame">
+      <div class="board-top-status">
+        <span>BAY INTERCONNECTION SCHEMATIC &bull; CLICK ANY SUBSTATION OR BREAKER TO OPERATE</span>
+        <span>GRID ISLANDING STATUS: <strong id="boardStatusTxt" style="color: #22c55e;">CLOSED LOOP (NORMAL)</strong></span>
+      </div>
 
-      <!-- SVG Single-Line Schematic -->
-      <div class="schematic-stage">
-        <svg id="sldSvg" viewBox="0 0 920 580" class="schematic-svg" xmlns="http://www.w3.org/2000/svg">
+      <div class="mimic-canvas-wrapper">
+        <svg id="mimicSvg" viewBox="0 0 960 580" class="mimic-svg" xmlns="http://www.w3.org/2000/svg">
           
-          <!-- Subtle Grid Background -->
-          <line x1="0" y1="200" x2="920" y2="200" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-          <line x1="0" y1="400" x2="920" y2="400" stroke="rgba(255,255,255,0.04)" stroke-width="1"/>
-
-          <!-- 138kV Regional Backbone Transmission Line -->
-          <line x1="60" y1="200" x2="860" y2="200" class="line-138kv"/>
-          <text x="65" y="188" fill="#94a3b8" font-family="'JetBrains Mono', monospace" font-size="9" letter-spacing="1.5">138kV REGIONAL TRANSMISSION TRUNK</text>
-
-          <!-- 69kV Urban Distribution Bus -->
-          <line x1="200" y1="400" x2="720" y2="400" class="line-69kv"/>
-          <text x="205" y="418" fill="#64748b" font-family="'JetBrains Mono', monospace" font-size="9" letter-spacing="1.5">69kV URBAN SUB-TRANSMISSION RING</text>
-
-          <!-- Vertical Intertie Drops -->
-          <line x1="220" y1="200" x2="220" y2="400" class="feeder-drop"/>
-          <line x1="460" y1="200" x2="460" y2="400" class="feeder-drop"/>
-          <line x1="700" y1="200" x2="700" y2="400" class="feeder-drop"/>
-
-          <!-- Substation Schematic Blocks -->
-
-          <!-- 1. Agus IV Hydro -->
-          <g class="substation-block" id="sub-agus-4" onclick="selectSubstation('agus-4')">
-            <rect x="60" y="130" width="120" height="54" class="sub-rect"/>
-            <text x="72" y="152" class="sub-name">AGUS IV HYDRO</text>
-            <text x="72" y="168" class="sub-stat">158 MW &bull; Balo-i</text>
-            <circle cx="120" cy="200" r="5" class="breaker-symbol breaker-closed" id="brk-agus"/>
+          <!-- Grid Background Dots / Screws -->
+          <g opacity="0.15" fill="#475569">
+            <circle cx="100" cy="80" r="2"/><circle cx="300" cy="80" r="2"/><circle cx="500" cy="80" r="2"/><circle cx="700" cy="80" r="2"/><circle cx="900" cy="80" r="2"/>
+            <circle cx="100" cy="280" r="2"/><circle cx="300" cy="280" r="2"/><circle cx="500" cy="280" r="2"/><circle cx="700" cy="280" r="2"/><circle cx="900" cy="280" r="2"/>
+            <circle cx="100" cy="480" r="2"/><circle cx="300" cy="480" r="2"/><circle cx="500" cy="480" r="2"/><circle cx="700" cy="480" r="2"/><circle cx="900" cy="480" r="2"/>
           </g>
 
-          <!-- 2. Lugait 138kV -->
-          <g class="substation-block active" id="sub-cdo-lugait" onclick="selectSubstation('cdo-lugait')">
-            <rect x="220" y="130" width="140" height="54" class="sub-rect"/>
-            <text x="232" y="152" class="sub-name">LUGAIT 138kV</text>
-            <text x="232" y="168" class="sub-stat">Load: 84 MW</text>
-            <circle cx="290" cy="200" r="5" class="breaker-symbol breaker-closed" id="brk-lugait"/>
+          <!-- 138kV Enamel Busbar Trunk (Orange) -->
+          <line x1="80" y1="180" x2="880" y2="180" class="bus-bar-138"/>
+          <text x="85" y="165" fill="#f97316" font-family="'Chakra Petch', sans-serif" font-size="11" font-weight="700" letter-spacing="2">138kV REGIONAL BULK TRANSMISSION BUSBAR</text>
+
+          <!-- 69kV Enamel Busbar Ring (Cyan) -->
+          <line x1="200" y1="380" x2="760" y2="380" class="bus-bar-69"/>
+          <text x="205" y="365" fill="#38bdf8" font-family="'Chakra Petch', sans-serif" font-size="10" font-weight="700" letter-spacing="2">69kV URBAN SUB-TRANSMISSION DISTRIBUTION RING</text>
+
+          <!-- Vertical Tie-Line Drops -->
+          <line x1="240" y1="180" x2="240" y2="380" class="bus-drop"/>
+          <line x1="480" y1="180" x2="480" y2="380" class="bus-drop"/>
+          <line x1="720" y1="180" x2="720" y2="380" class="bus-drop"/>
+
+          <!-- SUBSTATION NODES & MECHANICAL BREAKERS -->
+
+          <!-- 1. Agus IV Hydro Station -->
+          <g class="mimic-node" id="node-agus-4" onclick="selectSubstation('agus-4')">
+            <rect x="70" y="70" width="130" height="60" class="node-casing"/>
+            <text x="82" y="94" class="node-title-txt">AGUS IV HYDRO</text>
+            <text x="82" y="112" class="node-spec-txt">158 MW &bull; Balo-i Plant</text>
+          </g>
+          <!-- Breaker CB-101 -->
+          <g class="breaker-joint" onclick="toggleSingleBreaker('brk-agus')">
+            <rect x="125" y="172" width="16" height="16" rx="2" class="breaker-square brk-closed" id="brk-agus"/>
+            <text x="115" y="206" fill="#94a3b8" font-size="8" font-family="monospace">CB-101</text>
           </g>
 
-          <!-- 3. Tagoloan 138kV -->
-          <g class="substation-block" id="sub-tagoloan" onclick="selectSubstation('tagoloan')">
-            <rect x="400" y="130" width="140" height="54" class="sub-rect"/>
-            <text x="412" y="152" class="sub-name">TAGOLOAN 138kV</text>
-            <text x="412" y="168" class="sub-stat">PHIVIDEC &bull; 112 MW</text>
-            <circle cx="470" cy="200" r="5" class="breaker-symbol breaker-closed" id="brk-tagoloan"/>
+          <!-- 2. Lugait 138kV Substation -->
+          <g class="mimic-node active-node" id="node-cdo-lugait" onclick="selectSubstation('cdo-lugait')">
+            <rect x="240" y="70" width="140" height="60" class="node-casing"/>
+            <text x="252" y="94" class="node-title-txt">LUGAIT 138kV</text>
+            <text x="252" y="112" class="node-spec-txt">Load: 84.2 MW &bull; Stepdown</text>
+          </g>
+          <!-- Breaker CB-102 -->
+          <g class="breaker-joint" onclick="toggleSingleBreaker('brk-lugait')">
+            <rect x="302" y="172" width="16" height="16" rx="2" class="breaker-square brk-closed" id="brk-lugait"/>
+            <text x="292" y="206" fill="#94a3b8" font-size="8" font-family="monospace">CB-102</text>
           </g>
 
-          <!-- 4. Pulangi IV Hydro -->
-          <g class="substation-block" id="sub-pulangi-4" onclick="selectSubstation('pulangi-4')">
-            <rect x="580" y="130" width="140" height="54" class="sub-rect"/>
-            <text x="592" y="152" class="sub-name">PULANGI IV HYDRO</text>
-            <text x="592" y="168" class="sub-stat">255 MW &bull; Bukidnon</text>
-            <circle cx="650" cy="200" r="5" class="breaker-symbol breaker-closed" id="brk-pulangi"/>
+          <!-- 3. Tagoloan 138kV (PHIVIDEC) -->
+          <g class="mimic-node" id="node-tagoloan" onclick="selectSubstation('tagoloan')">
+            <rect x="420" y="70" width="140" height="60" class="node-casing"/>
+            <text x="432" y="94" class="node-title-txt">TAGOLOAN 138kV</text>
+            <text x="432" y="112" class="node-spec-txt">PHIVIDEC Port &bull; 112 MW</text>
+          </g>
+          <!-- Breaker CB-103 -->
+          <g class="breaker-joint" onclick="toggleSingleBreaker('brk-tagoloan')">
+            <rect x="482" y="172" width="16" height="16" rx="2" class="breaker-square brk-closed" id="brk-tagoloan"/>
+            <text x="472" y="206" fill="#94a3b8" font-size="8" font-family="monospace">CB-103</text>
           </g>
 
-          <!-- 5. Opol 69kV -->
-          <g class="substation-block" id="sub-opol" onclick="selectSubstation('opol')">
-            <rect x="180" y="430" width="120" height="54" class="sub-rect"/>
-            <text x="192" y="452" class="sub-name">OPOL 69kV</text>
-            <text x="192" y="468" class="sub-stat">Feeder: 28 MW</text>
-            <circle cx="240" cy="400" r="5" class="breaker-symbol breaker-closed" id="brk-opol"/>
+          <!-- 4. Pulangi IV Hydro Station -->
+          <g class="mimic-node" id="node-pulangi-4" onclick="selectSubstation('pulangi-4')">
+            <rect x="610" y="70" width="140" height="60" class="node-casing"/>
+            <text x="622" y="94" class="node-title-txt">PULANGI IV HYDRO</text>
+            <text x="622" y="112" class="node-spec-txt">255 MW &bull; Bukidnon</text>
+          </g>
+          <!-- Breaker CB-104 -->
+          <g class="breaker-joint" onclick="toggleSingleBreaker('brk-pulangi')">
+            <rect x="672" y="172" width="16" height="16" rx="2" class="breaker-square brk-closed" id="brk-pulangi"/>
+            <text x="662" y="206" fill="#94a3b8" font-size="8" font-family="monospace">CB-104</text>
           </g>
 
-          <!-- 6. Carmen 69kV (CDO Urban Hub) -->
-          <g class="substation-block" id="sub-cdo-carmen" onclick="selectSubstation('cdo-carmen')">
-            <rect x="340" y="430" width="150" height="54" class="sub-rect"/>
-            <text x="352" y="452" class="sub-name">CARMEN 69kV (CDO)</text>
-            <text x="352" y="468" class="sub-stat">City Center &bull; 62 MW</text>
-            <circle cx="415" cy="400" r="5" class="breaker-symbol breaker-closed" id="brk-carmen"/>
+          <!-- 5. Opol 69kV Substation -->
+          <g class="mimic-node" id="node-opol" onclick="selectSubstation('opol')">
+            <rect x="180" y="440" width="130" height="60" class="node-casing"/>
+            <text x="192" y="464" class="node-title-txt">OPOL 69kV</text>
+            <text x="192" y="482" class="node-spec-txt">Feeder: 28.5 MW</text>
+          </g>
+          <!-- Breaker CB-201 -->
+          <g class="breaker-joint" onclick="toggleSingleBreaker('brk-opol')">
+            <rect x="232" y="372" width="16" height="16" rx="2" class="breaker-square brk-closed" id="brk-opol"/>
+            <text x="222" y="406" fill="#94a3b8" font-size="8" font-family="monospace">CB-201</text>
           </g>
 
-          <!-- 7. Cugman 69kV (CDO East) -->
-          <g class="substation-block" id="sub-cdo-cugman" onclick="selectSubstation('cdo-cugman')">
-            <rect x="530" y="430" width="150" height="54" class="sub-rect"/>
-            <text x="542" y="452" class="sub-name">CUGMAN 69kV</text>
-            <text x="542" y="468" class="sub-stat">Distribution &bull; 46 MW</text>
-            <circle cx="605" cy="400" r="5" class="breaker-symbol breaker-closed" id="brk-cugman"/>
+          <!-- 6. Carmen 69kV Substation (CDO Urban Hub) -->
+          <g class="mimic-node" id="node-cdo-carmen" onclick="selectSubstation('cdo-carmen')">
+            <rect x="360" y="440" width="150" height="60" class="node-casing"/>
+            <text x="372" y="464" class="node-title-txt">CARMEN 69kV (CDO)</text>
+            <text x="372" y="482" class="node-spec-txt">Urban Center &bull; 62.8 MW</text>
+          </g>
+          <!-- Breaker CB-202 -->
+          <g class="breaker-joint" onclick="toggleSingleBreaker('brk-carmen')">
+            <rect x="427" y="372" width="16" height="16" rx="2" class="breaker-square brk-closed" id="brk-carmen"/>
+            <text x="417" y="406" fill="#94a3b8" font-size="8" font-family="monospace">CB-202</text>
+          </g>
+
+          <!-- 7. Cugman 69kV Substation (CDO East) -->
+          <g class="mimic-node" id="node-cdo-cugman" onclick="selectSubstation('cdo-cugman')">
+            <rect x="560" y="440" width="150" height="60" class="node-casing"/>
+            <text x="572" y="464" class="node-title-txt">CUGMAN 69kV</text>
+            <text x="572" y="482" class="node-spec-txt">Distribution &bull; 46.4 MW</text>
+          </g>
+          <!-- Breaker CB-203 -->
+          <g class="breaker-joint" onclick="toggleSingleBreaker('brk-cugman')">
+            <rect x="627" y="372" width="16" height="16" rx="2" class="breaker-square brk-closed" id="brk-cugman"/>
+            <text x="617" y="406" fill="#94a3b8" font-size="8" font-family="monospace">CB-203</text>
           </g>
 
         </svg>
       </div>
 
-      <!-- Schematic Legend -->
-      <footer class="schematic-legend">
-        <div class="legend-entry"><span class="swatch-138"></span> 138kV Backbone Line</div>
-        <div class="legend-entry"><span class="swatch-69"></span> 69kV Distribution Ring</div>
-        <div class="legend-entry"><span class="swatch-green"></span> Breaker Closed (Normal)</div>
+      <!-- Mimic Board Legend Strip -->
+      <footer class="mimic-legend-strip">
+        <div><span class="legend-swatch-138"></span> 138kV High-Voltage Bus</div>
+        <div><span class="legend-swatch-69"></span> 69kV Sub-Transmission Bus</div>
+        <div><span class="legend-swatch-closed"></span> Closed Breaker (In-Service)</div>
+        <div><span class="legend-swatch-open"></span> Open / Tripped Breaker</div>
       </footer>
-
     </section>
 
-    <!-- Right: Clean Minimalist Telemetry Ledger -->
-    <aside class="telemetry-ledger">
-      <div class="ledger-content">
+    <!-- Right: Physical Control Instrument Bay -->
+    <aside class="instrument-bay">
+      <div class="bay-inner">
         
-        <div class="ledger-header">
-          <span class="ledger-kicker" id="substationTag">BULK SUB-TRANSMISSION STEP-DOWN</span>
-          <h2 class="ledger-title" id="substationTitle">Lugait Substation (138kV / 69kV)</h2>
-          <p class="ledger-coord" id="substationGeo">Misamis Oriental Border &bull; 8°20'N 124°15'E</p>
-        </div>
-
-        <!-- Telemetry Data Table -->
-        <table class="data-table">
-          <tbody>
-            <tr>
-              <td class="td-label">Bus Voltage</td>
-              <td class="td-value" id="gVoltage">137.8 kV</td>
-            </tr>
-            <tr>
-              <td class="td-label">Active Power Flow</td>
-              <td class="td-value" id="gPower">84.2 MW</td>
-            </tr>
-            <tr>
-              <td class="td-label">Power Factor</td>
-              <td class="td-value" id="gPF">0.96 Lag</td>
-            </tr>
-            <tr>
-              <td class="td-label">Transformer Temperature</td>
-              <td class="td-value" id="gTemp">58.4 °C</td>
-            </tr>
-          </tbody>
-        </table>
-
-        <!-- Contingency Controller -->
-        <div class="contingency-box">
-          <div class="box-title-row">
-            <span class="box-title">N-1 CONTINGENCY TEST</span>
-            <span class="badge-state" id="gridStatusBadge">NORMAL</span>
-          </div>
-          <p class="box-summary">
-            Simulate a transmission trip on the primary 138kV tie line to test automated under-frequency response and hydropower spinning reserve dispatch:
-          </p>
-          <div class="box-controls">
-            <button class="control-btn btn-trip" id="tripBtn" onclick="toggleLineTrip()">Trip 138kV Tie Line</button>
-            <button class="control-btn" onclick="restoreGridState()">Reset System</button>
-          </div>
-          <div class="event-log" id="eventLog">
-            <div><span>[00:00:00]</span> All interties synchronized and carrying nominal load.</div>
+        <!-- Analog Galvanometer / Synchronoscope -->
+        <div class="analog-meter-panel">
+          <span class="meter-title">GRID SYNCHRONOSCOPE &bull; 60Hz NOMINAL</span>
+          <svg viewBox="0 0 220 110" class="sweep-dial-svg">
+            <!-- Sweep Arc -->
+            <path d="M 20,105 A 90,90 0 0,1 200,105" fill="none" stroke="#232c3a" stroke-width="12"/>
+            <path d="M 90,105 A 90,90 0 0,1 130,105" fill="none" stroke="#22c55e" stroke-width="12"/>
+            <!-- Tick Marks -->
+            <line x1="20" y1="105" x2="30" y2="105" stroke="#94a3b8" stroke-width="2"/>
+            <line x1="110" y1="15" x2="110" y2="25" stroke="#22c55e" stroke-width="2"/>
+            <line x1="200" y1="105" x2="190" y2="105" stroke="#94a3b8" stroke-width="2"/>
+            <text x="25" y="98" fill="#64748b" font-size="8">58.0</text>
+            <text x="104" y="35" fill="#22c55e" font-size="9" font-weight="700">60.0</text>
+            <text x="175" y="98" fill="#64748b" font-size="8">62.0</text>
+            <!-- Needle -->
+            <line x1="110" y1="105" x2="110" y2="22" stroke="#ef4444" stroke-width="2.5" id="analogNeedle" class="meter-needle"/>
+            <circle cx="110" cy="105" r="5" fill="#ef4444"/>
+          </svg>
+          <div class="digital-readout-strip">
+            <span style="font-size: 10px; color: #64748b;">SYSTEM FREQ:</span>
+            <span class="led-freq-val" id="ledFreq">60.01 Hz</span>
           </div>
         </div>
 
-        <!-- Outgoing Feeders -->
-        <div class="feeders-section">
-          <h4>OUTGOING FEEDER ASSIGNMENTS</h4>
-          <table class="feeder-table">
+        <!-- Heavy Stamped Substation Nameplate -->
+        <div class="nameplate-box">
+          <div class="nameplate-corner-screw screw-tl"></div>
+          <div class="nameplate-corner-screw screw-tr"></div>
+          <div class="nameplate-corner-screw screw-bl"></div>
+          <div class="nameplate-corner-screw screw-br"></div>
+          <span class="plate-kicker" id="bayKicker">138kV / 69kV BULK SUBSTATION</span>
+          <h3 class="plate-title" id="bayTitle">Lugait Substation (138kV / 69kV)</h3>
+          <p class="plate-coords" id="bayCoords">Misamis Oriental Border &bull; 8°20'N 124°15'E</p>
+        </div>
+
+        <!-- Segmented LED Metric Displays -->
+        <div class="meter-cluster">
+          <div class="metric-cell">
+            <span class="cell-lbl">BUS VOLTAGE</span>
+            <div class="cell-val" id="valVolt">137.8 kV</div>
+          </div>
+          <div class="metric-cell">
+            <span class="cell-lbl">ACTIVE LOAD</span>
+            <div class="cell-val" id="valPower">84.2 MW</div>
+          </div>
+          <div class="metric-cell">
+            <span class="cell-lbl">POWER FACTOR</span>
+            <div class="cell-val" id="valPF">0.96 LAG</div>
+          </div>
+          <div class="metric-cell">
+            <span class="cell-lbl">XFMR TEMP</span>
+            <div class="cell-val" id="valTemp">58.4 °C</div>
+          </div>
+        </div>
+
+        <!-- Mechanical Breaker Switchgear Console -->
+        <div class="switchgear-console">
+          <div class="switchgear-header">
+            <span class="sw-label">138kV INTERTIE SWITCHGEAR</span>
+            <span class="sw-target">N-1 CONTINGENCY TEST</span>
+          </div>
+          <div class="rocker-switch-row">
+            <button class="rocker-btn rocker-trip" onclick="tripMainTieLine()">TRIP 138kV TRUNK</button>
+            <button class="rocker-btn rocker-reclose" onclick="recloseTieLine()">RECLOSE & SYNC</button>
+          </div>
+        </div>
+
+        <!-- Event Strip Printer Tape -->
+        <div class="printer-tape-box" id="printerTape">
+          <div><strong>[00:00:00]</strong> &bull; TELEMETRY ONLINE: All Northern Mindanao feeders in sync.</div>
+        </div>
+
+        <!-- Downstream Feeder Assignment Table -->
+        <div>
+          <span style="font-size: 9px; font-weight: 700; color: #64748b; letter-spacing: 0.1em; display: block; margin-bottom: 6px;">DOWNSTREAM FEEDER ALLOCATIONS</span>
+          <table class="bay-feeders-table">
             <thead>
               <tr>
-                <th>FEEDER / RECEPTOR</th>
-                <th>VOLTAGE</th>
+                <th>FEEDER RECEPTOR</th>
+                <th>CLASS</th>
                 <th style="text-align:right;">LOAD</th>
               </tr>
             </thead>
-            <tbody id="feedersTableBody">
+            <tbody id="bayFeedersBody">
               <!-- Rendered via JS -->
             </tbody>
           </table>
@@ -214,4 +262,3 @@
   <script src="app.js"></script>
 </body>
 </html>
-
