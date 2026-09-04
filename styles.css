@@ -1,20 +1,12 @@
-/* Mindanao Grid Mesh — Physical High-Voltage Mimic Board Aesthetic
-   Industrial Control Room Standards:
-   - Matte warm industrial slate (#181b20 / #20242b)
-   - Heavy physical tile segments with physical beveled edges (inset shadows, micro-grooves)
-   - Glowing annunciator lamp panels (amber/green/red)
-   - Authentic mechanical breaker rocker toggles
-   - Analog round sweep meter (needle deflecting 58 - 62 Hz)
-   - Thick enamel busbars (138kV stark copper-orange #ea580c, 69kV industrial zinc-cyan #0284c7)
-   - Zero generic card grids, zero flat SaaS tabs.
-*/
+/* Mindanao Grid Mesh - Physical High-Voltage Mimic Board Aesthetic */
+/* Character Encoding: 100% 7-Bit ASCII - Industrial Control Room Standards */
 
 :root {
-  --board-bg: #14171d;
-  --panel-bg: #1c212a;
-  --panel-bevel: #282f3c;
-  --panel-shadow: #0d1015;
-  --rack-metal: #232a35;
+  --board-bg: #12151b;
+  --panel-bg: #1a1f28;
+  --panel-bevel: #262e3b;
+  --panel-shadow: #0a0d12;
+  --rack-metal: #212833;
 
   --bus-138: #f97316; /* 138kV Copper Orange Enamel */
   --bus-69: #38bdf8;  /* 69kV Transmission Cyan */
@@ -26,15 +18,17 @@
   --lamp-red-glow: rgba(239, 68, 68, 0.4);
   --lamp-amber-on: #f59e0b;
   --lamp-amber-glow: rgba(245, 158, 11, 0.4);
-  --lamp-off: #2b3340;
+  --lamp-off: #242c38;
 
   --text-eng-bright: #ffffff;
   --text-eng-dim: #94a3b8;
   --text-amber-led: #fbbf24;
 
-  --font-led: 'DSEG7-Classic', 'JetBrains Mono', monospace;
   --font-mono: 'JetBrains Mono', monospace;
-  --font-display: 'Chakra Petch', 'Space Grotesk', sans-serif;
+  --font-display: 'Chakra Petch', sans-serif;
+
+  --radius-sm: 4px;
+  --radius-md: 6px;
 }
 
 * {
@@ -57,14 +51,15 @@ body {
 
 /* Control Room Header Fascia */
 .mimic-fascia {
-  background: linear-gradient(180deg, #2a313d 0%, #1c212a 100%);
-  border-bottom: 3px solid #0f1217;
+  background: linear-gradient(180deg, #28303c 0%, #1a1f28 100%);
+  border-bottom: 3px solid #0d1015;
   box-shadow: 0 4px 12px rgba(0,0,0,0.5);
   padding: 8px 24px;
   display: flex;
   justify-content: space-between;
   align-items: center;
   flex-shrink: 0;
+  z-index: 20;
 }
 
 .fascia-title-block {
@@ -75,45 +70,53 @@ body {
 
 .stencil-label {
   font-family: var(--font-display);
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 0.14em;
   color: #ffffff;
   text-shadow: 0 1px 2px rgba(0,0,0,0.8);
-  border: 1px solid rgba(255,255,255,0.15);
-  padding: 3px 10px;
-  background: #14171d;
+  border: 1px solid rgba(255,255,255,0.18);
+  padding: 4px 12px;
+  background: #12151b;
+  border-radius: var(--radius-sm);
 }
 
 .fascia-indicators {
   display: flex;
   align-items: center;
-  gap: 28px;
+  gap: 20px;
 }
 
 /* Annunciator Alarm Light Box */
 .annunciator-panel {
   display: flex;
-  gap: 6px;
+  gap: 5px;
 }
 
 .annunciator-box {
-  background: #101318;
-  border: 1px solid #333d4e;
+  background: #0f1217;
+  border: 1px solid #2d3644;
   padding: 4px 8px;
-  font-size: 8.5px;
+  font-size: 8px;
   font-weight: 700;
   letter-spacing: 0.08em;
   color: #4b5563;
   text-align: center;
-  line-height: 1.1;
+  line-height: 1.15;
   transition: all 0.2s;
+  min-width: 72px;
 }
 
 .annunciator-box.lamp-active-green {
   color: #22c55e;
   border-color: #22c55e;
   box-shadow: inset 0 0 6px var(--lamp-green-glow), 0 0 8px var(--lamp-green-glow);
+}
+
+.annunciator-box.lamp-active-amber {
+  color: #f59e0b;
+  border-color: #f59e0b;
+  box-shadow: inset 0 0 6px var(--lamp-amber-glow), 0 0 8px var(--lamp-amber-glow);
 }
 
 .annunciator-box.lamp-active-red {
@@ -132,7 +135,7 @@ body {
 .control-room-grid {
   flex: 1;
   display: grid;
-  grid-template-columns: 1fr 420px;
+  grid-template-columns: 1fr 440px;
   height: calc(100vh - 48px);
   overflow: hidden;
 }
@@ -140,10 +143,10 @@ body {
 /* Left: Hardwired Mimic Tile Board */
 .mimic-board-frame {
   background: 
-    radial-gradient(circle at 50% 50%, #1e242d 0%, #14171e 100%),
+    radial-gradient(circle at 50% 50%, #1d222b 0%, #12151b 100%),
     repeating-linear-gradient(0deg, transparent, transparent 39px, rgba(255,255,255,0.03) 40px),
     repeating-linear-gradient(90deg, transparent, transparent 39px, rgba(255,255,255,0.03) 40px);
-  border-right: 4px solid #0f1217;
+  border-right: 4px solid #0d1015;
   position: relative;
   display: flex;
   flex-direction: column;
@@ -151,14 +154,15 @@ body {
 }
 
 .board-top-status {
-  padding: 8px 20px;
-  background: rgba(0,0,0,0.3);
+  padding: 8px 18px;
+  background: rgba(0,0,0,0.35);
   border-bottom: 1px solid rgba(255,255,255,0.06);
   display: flex;
   justify-content: space-between;
   align-items: center;
   font-size: 10px;
   color: var(--text-eng-dim);
+  z-index: 10;
 }
 
 .mimic-canvas-wrapper {
@@ -167,6 +171,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
 }
 
 .mimic-svg {
@@ -183,6 +188,7 @@ body {
   stroke-width: 7;
   stroke-linecap: square;
   filter: drop-shadow(0 0 3px rgba(249, 115, 22, 0.4));
+  transition: stroke 0.3s, opacity 0.3s;
 }
 
 .bus-bar-69 {
@@ -190,12 +196,29 @@ body {
   stroke-width: 5;
   stroke-linecap: square;
   filter: drop-shadow(0 0 3px rgba(56, 189, 248, 0.4));
+  transition: stroke 0.3s, opacity 0.3s;
 }
 
 .bus-drop {
   stroke: #64748b;
   stroke-width: 2.5;
   stroke-dasharray: 6 4;
+  transition: stroke 0.3s;
+}
+
+.bus-flow-active {
+  stroke-dasharray: 8 6;
+  animation: busFlowDash 12s linear infinite;
+}
+
+@keyframes busFlowDash {
+  to { stroke-dashoffset: -140; }
+}
+
+.bus-dead {
+  stroke: #334155 !important;
+  filter: none !important;
+  opacity: 0.4;
 }
 
 /* Mechanical Breakers on SVG */
@@ -232,22 +255,29 @@ body {
 }
 
 .node-casing {
-  fill: #181d24;
-  stroke: #333d4e;
+  fill: #161a21;
+  stroke: #2e3746;
   stroke-width: 2;
   rx: 3px;
-  transition: stroke 0.15s, fill 0.15s;
+  transition: stroke 0.15s, fill 0.15s, filter 0.15s;
 }
 
 .mimic-node:hover .node-casing {
   stroke: #94a3b8;
-  fill: #222933;
+  fill: #202630;
 }
 
 .mimic-node.active-node .node-casing {
   stroke: #ffffff;
-  fill: #242c38;
+  fill: #222a36;
   filter: drop-shadow(0 0 8px rgba(255,255,255,0.25));
+}
+
+.mimic-node.node-deenergized .node-casing {
+  fill: #0c0f14 !important;
+  stroke: #1e293b !important;
+  filter: none !important;
+  opacity: 0.5;
 }
 
 .node-title-txt {
@@ -256,6 +286,11 @@ body {
   font-weight: 700;
   letter-spacing: 0.05em;
   fill: #ffffff;
+  transition: fill 0.2s;
+}
+
+.mimic-node.node-deenergized .node-title-txt {
+  fill: #64748b !important;
 }
 
 .node-spec-txt {
@@ -266,59 +301,68 @@ body {
 
 /* Bottom Legend Strip */
 .mimic-legend-strip {
-  background: #11141a;
+  background: #0f1217;
   border-top: 1px solid rgba(255,255,255,0.08);
-  padding: 8px 24px;
+  padding: 8px 20px;
   display: flex;
-  gap: 28px;
-  font-size: 10px;
+  gap: 22px;
+  font-size: 9.5px;
   color: var(--text-eng-dim);
 }
 
-.legend-swatch-138 { width: 16px; height: 5px; background: var(--bus-138); display: inline-block; }
-.legend-swatch-69 { width: 16px; height: 4px; background: var(--bus-69); display: inline-block; }
-.legend-swatch-closed { width: 8px; height: 8px; background: #22c55e; display: inline-block; }
-.legend-swatch-open { width: 8px; height: 8px; background: #ef4444; display: inline-block; }
+.legend-swatch-138 { width: 14px; height: 5px; background: var(--bus-138); display: inline-block; vertical-align: middle; margin-right: 4px; }
+.legend-swatch-69 { width: 14px; height: 4px; background: var(--bus-69); display: inline-block; vertical-align: middle; margin-right: 4px; }
+.legend-swatch-closed { width: 8px; height: 8px; background: #22c55e; display: inline-block; vertical-align: middle; margin-right: 4px; }
+.legend-swatch-open { width: 8px; height: 8px; background: #ef4444; display: inline-block; vertical-align: middle; margin-right: 4px; }
 
 /* Right: Physical Telemetry Bay & Instrument Rack */
 .instrument-bay {
-  background: linear-gradient(180deg, #1c212a 0%, #161a22 100%);
+  background: linear-gradient(180deg, #1a1f28 0%, #14171e 100%);
   display: flex;
   flex-direction: column;
   overflow-y: auto;
   border-left: 2px solid rgba(255,255,255,0.06);
 }
 
-.bay-inner {
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 22px;
+.instrument-bay::-webkit-scrollbar {
+  width: 5px;
 }
 
-/* Analog Sweep Meter (Galvanometer / Frequency Indicator) */
+.instrument-bay::-webkit-scrollbar-thumb {
+  background: #334155;
+  border-radius: 2px;
+}
+
+.bay-inner {
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* Analog Sweep Meter (Galvanometer / Synchronoscope) */
 .analog-meter-panel {
-  background: #101318;
-  border: 2px solid #2e3746;
+  background: #0d1015;
+  border: 2px solid #2b3340;
   box-shadow: inset 0 2px 8px rgba(0,0,0,0.8), 0 2px 4px rgba(0,0,0,0.4);
   border-radius: 4px;
-  padding: 14px;
+  padding: 12px 14px;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
 
 .meter-title {
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
   letter-spacing: 0.12em;
   color: #94a3b8;
-  margin-bottom: 6px;
+  margin-bottom: 4px;
 }
 
 .sweep-dial-svg {
   width: 220px;
-  height: 110px;
+  height: 105px;
   display: block;
 }
 
@@ -328,18 +372,19 @@ body {
 }
 
 .digital-readout-strip {
-  margin-top: 6px;
-  background: #090c10;
-  border: 1px solid #1f2733;
+  margin-top: 4px;
+  background: #080a0e;
+  border: 1px solid #1c222c;
   padding: 4px 16px;
   display: flex;
   gap: 12px;
   align-items: baseline;
+  border-radius: 2px;
 }
 
 .led-freq-val {
-  font-family: var(--font-led);
-  font-size: 20px;
+  font-family: var(--font-mono);
+  font-size: 19px;
   font-weight: 700;
   color: #22c55e;
   text-shadow: 0 0 6px rgba(34, 197, 94, 0.5);
@@ -350,18 +395,23 @@ body {
   text-shadow: 0 0 8px rgba(239, 68, 68, 0.6);
 }
 
+.led-freq-val.warn-freq {
+  color: #f59e0b;
+  text-shadow: 0 0 8px rgba(245, 158, 11, 0.6);
+}
+
 /* Substation Bay Nameplate */
 .nameplate-box {
-  background: #0d1015;
-  border: 2px solid #333d4e;
-  padding: 14px;
+  background: #0b0e12;
+  border: 2px solid #2e3746;
+  padding: 12px 14px;
   position: relative;
 }
 
 .nameplate-corner-screw {
   position: absolute;
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
   background: #475569;
   border-radius: 50%;
   border: 1px solid #1e293b;
@@ -373,7 +423,7 @@ body {
 .screw-br { bottom: 4px; right: 4px; }
 
 .plate-kicker {
-  font-size: 8.5px;
+  font-size: 8px;
   letter-spacing: 0.14em;
   color: var(--bus-138);
   font-weight: 700;
@@ -381,14 +431,14 @@ body {
 
 .plate-title {
   font-family: var(--font-display);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: #ffffff;
-  margin: 3px 0;
+  margin: 2px 0;
 }
 
 .plate-coords {
-  font-size: 9.5px;
+  font-size: 9px;
   color: #94a3b8;
 }
 
@@ -396,39 +446,133 @@ body {
 .meter-cluster {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  gap: 10px;
+  gap: 8px;
 }
 
 .metric-cell {
-  background: #0c0f14;
-  border: 1px solid #232c3a;
-  padding: 10px 12px;
+  background: #0a0d11;
+  border: 1px solid #1e2633;
+  padding: 8px 12px;
 }
 
 .cell-lbl {
-  font-size: 9px;
+  font-size: 8.5px;
   color: #64748b;
   letter-spacing: 0.05em;
   display: block;
 }
 
 .cell-val {
-  font-size: 17px;
+  font-size: 16px;
   font-weight: 700;
   color: var(--text-amber-led);
   margin-top: 2px;
-  font-family: var(--font-led);
-  text-shadow: 0 0 5px rgba(251, 191, 36, 0.4);
+  font-family: var(--font-mono);
+  text-shadow: 0 0 5px rgba(251, 191, 36, 0.35);
 }
 
-/* Physical Mechanical Rocker Switch (Trip / Reclose) */
-.switchgear-console {
-  background: #11151c;
-  border: 2px solid #2d3644;
-  padding: 16px;
+/* Operational Governor & Demand Control Section */
+.control-rack-section {
+  background: #0f1217;
+  border: 1px solid #27303e;
+  padding: 14px;
   display: flex;
   flex-direction: column;
   gap: 12px;
+}
+
+.control-rack-title {
+  font-size: 9.5px;
+  font-weight: 700;
+  color: #94a3b8;
+  letter-spacing: 0.1em;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.control-rack-title strong {
+  color: var(--bus-138);
+}
+
+/* Demand Profile Selector */
+.demand-profile-row {
+  display: flex;
+  gap: 5px;
+}
+
+.demand-btn {
+  flex: 1;
+  background: #181f2a;
+  border: 1px solid #334155;
+  color: #94a3b8;
+  padding: 5px 4px;
+  font-size: 8.5px;
+  font-family: var(--font-mono);
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s;
+  text-align: center;
+}
+
+.demand-btn:hover {
+  background: #252e3e;
+  color: #ffffff;
+}
+
+.demand-btn.active {
+  background: var(--bus-69);
+  color: #0c1520;
+  border-color: var(--bus-69);
+  font-weight: 700;
+}
+
+/* Generator Sliders */
+.slider-control-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.slider-label-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 9.5px;
+  color: var(--text-eng-dim);
+}
+
+.slider-label-row strong {
+  color: #ffffff;
+  font-family: var(--font-mono);
+}
+
+input[type=range] {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 4px;
+  background: #273142;
+  border-radius: 2px;
+  outline: none;
+}
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 2px;
+  background: var(--bus-138);
+  cursor: pointer;
+  border: 1px solid #ffffff;
+}
+
+/* Physical Mechanical Rocker Switchgear Console */
+.switchgear-console {
+  background: #0f1217;
+  border: 2px solid #273142;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
 }
 
 .switchgear-header {
@@ -438,40 +582,40 @@ body {
 }
 
 .sw-label {
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 700;
   letter-spacing: 0.1em;
   color: #ffffff;
 }
 
 .sw-target {
-  font-size: 9px;
+  font-size: 8.5px;
   color: #ef4444;
 }
 
 .rocker-switch-row {
   display: flex;
-  gap: 12px;
+  gap: 10px;
 }
 
 .rocker-btn {
   flex: 1;
-  background: linear-gradient(180deg, #374151 0%, #1f2937 100%);
-  border: 2px solid #4b5563;
+  background: linear-gradient(180deg, #333d4b 0%, #1c222b 100%);
+  border: 2px solid #475569;
   color: #ffffff;
-  padding: 12px;
+  padding: 10px;
   font-family: var(--font-mono);
-  font-size: 11px;
+  font-size: 10px;
   font-weight: 700;
   cursor: pointer;
-  box-shadow: 0 3px 0 #111827;
+  box-shadow: 0 3px 0 #0d1015;
   text-transform: uppercase;
   transition: all 0.1s;
 }
 
 .rocker-btn:active {
   transform: translateY(2px);
-  box-shadow: 0 1px 0 #111827;
+  box-shadow: 0 1px 0 #0d1015;
 }
 
 .rocker-trip {
@@ -496,10 +640,10 @@ body {
 
 /* Event Strip Printer Tape */
 .printer-tape-box {
-  background: #090c10;
-  border: 1px solid #232c3a;
-  padding: 12px;
-  font-size: 9.5px;
+  background: #080a0e;
+  border: 1px solid #1e2633;
+  padding: 10px;
+  font-size: 9px;
   line-height: 1.5;
   color: #94a3b8;
   height: 110px;
@@ -507,11 +651,17 @@ body {
   display: flex;
   flex-direction: column;
   gap: 4px;
+  font-family: var(--font-mono);
 }
 
 .tape-alert {
   color: #ef4444;
   font-weight: 700;
+}
+
+.tape-warn {
+  color: #f59e0b;
+  font-weight: 600;
 }
 
 .tape-ok {
@@ -522,19 +672,19 @@ body {
 .bay-feeders-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 10px;
+  font-size: 9.5px;
 }
 
 .bay-feeders-table th {
   text-align: left;
   color: #64748b;
   padding-bottom: 6px;
-  border-bottom: 1px solid #232c3a;
-  font-size: 8.5px;
+  border-bottom: 1px solid #1e2633;
+  font-size: 8px;
 }
 
 .bay-feeders-table td {
-  padding: 6px 0;
+  padding: 5px 0;
   border-bottom: 1px solid rgba(255,255,255,0.04);
 }
 
@@ -544,8 +694,33 @@ body {
   font-weight: 700;
 }
 
+.feeder-shed {
+  color: #ef4444 !important;
+  text-decoration: line-through;
+}
+
+/* SCADA Export Button */
+.btn-scada-export {
+  background: #131922;
+  border: 1px solid #2b3749;
+  color: var(--bus-69);
+  padding: 8px 12px;
+  font-family: var(--font-mono);
+  font-size: 10px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  border-radius: var(--radius-sm);
+}
+
+.btn-scada-export:hover {
+  background: var(--bus-69);
+  color: #0b1118;
+}
+
 /* Responsive */
-@media (max-width: 1024px) {
+@media (max-width: 1100px) {
   .control-room-grid {
     grid-template-columns: 1fr;
     height: auto;
