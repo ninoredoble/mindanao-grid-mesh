@@ -174,14 +174,14 @@
       var worst = null;
       LINES.forEach(function (m) {
         var q = r.lines[m.id];
-        if (q.closed && (!worst || q.loading > r.lines[worst].loading)) worst = m.id;
+        if (q.closed && q.over && q.loading > base.lines[m.id].loading + 1e-3 && (!worst || q.loading > r.lines[worst].loading)) worst = m.id;
       });
       var lost = r.unserved - base.unserved;
       out[l.id] = {
         lost: lost,
         worstId: worst,
         worst: worst ? r.lines[worst].loading : 0,
-        verdict: lost > 0.05 ? 'loss' : (worst && r.lines[worst].over) ? 'overload' : 'ok'
+        verdict: lost > 0.05 ? 'loss' : worst ? 'overload' : 'ok'
       };
     });
     return out;

@@ -143,7 +143,7 @@
       var r = {};
       var g = el('g', { 'class': 'bus ' + bus.kind }, gBus);
       var tx = n.x, ty = n.y, anchor = 'middle';
-      var off = bus.kind === 'gen' ? 40 : 40;
+      var off = 40;
 
       if (bus.kind === 'gen') {
         el('circle', { cx: n.x, cy: n.y, r: 27, 'class': 'gen-disc' }, g);
