@@ -358,7 +358,7 @@
     M.LINES.forEach(function (ln) {
       var cell = rowRefs[ln.id].cont, c = cont[ln.id];
       if (!c) { cell.textContent = 'Already open'; cell.className = 'c-cont muted'; return; }
-      if (c.verdict === 'ok') { cell.textContent = 'No overload, nothing lost'; cell.className = 'c-cont ok'; }
+      if (c.verdict === 'ok') { cell.textContent = 'No new overload, nothing more lost'; cell.className = 'c-cont ok'; }
       else if (c.verdict === 'overload') { cell.textContent = 'Overloads ' + c.worstId + ' at ' + pct(c.worst) + '%'; cell.className = 'c-cont warn'; }
       else { cell.textContent = 'Loses ' + fmt(c.lost) + ' MW more load'; cell.className = 'c-cont bad'; }
     });
