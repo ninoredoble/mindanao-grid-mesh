@@ -327,7 +327,6 @@
       else if (!q.live) ref.labVal.textContent = 'dead';
       else ref.labVal.textContent = fmt(Math.abs(q.flow)) + ' MW';
 
-      var pr = ref.brk.parentNode;
       row.btn.setAttribute('aria-pressed', q.closed ? 'false' : 'true');
       row.btn.setAttribute('aria-label', ln.id + ' is ' + (q.closed ? 'closed. Open it.' : 'open. Close it.'));
       row.btn.className = 'brk-btn ' + (q.closed ? 'closed' : 'open');
@@ -361,7 +360,7 @@
       if (!c) { cell.textContent = 'Already open'; cell.className = 'c-cont muted'; return; }
       if (c.verdict === 'ok') { cell.textContent = 'No overload, nothing lost'; cell.className = 'c-cont ok'; }
       else if (c.verdict === 'overload') { cell.textContent = 'Overloads ' + c.worstId + ' at ' + pct(c.worst) + '%'; cell.className = 'c-cont warn'; }
-      else { cell.textContent = 'Loses ' + fmt(c.unserved) + ' MW of load'; cell.className = 'c-cont bad'; }
+      else { cell.textContent = 'Loses ' + fmt(c.lost) + ' MW more load'; cell.className = 'c-cont bad'; }
     });
 
     /* readouts */
@@ -369,10 +368,10 @@
     $('rServed').textContent = fmt(r.served) + ' MW';
     $('rUnserved').textContent = fmt(r.unserved) + ' MW';
     $('rUnserved').parentNode.className = 'r-un' + (r.unserved > 0.5 ? ' bad' : '');
-    [['Agus', 'AGUS', 158], ['Pul', 'PUL', 255]].forEach(function (g) {
-      var out = r.buses[g[1]].gen;
-      $('val' + g[0]).textContent = fmt(out) + ' / ' + g[2] + ' MW';
-      $('bar' + g[0]).style.width = Math.min(100, out / g[2] * 100) + '%';
+    [['Agus', 'AGUS'], ['Pul', 'PUL']].forEach(function (g) {
+      var out = r.buses[g[1]].gen, cap = M.BUS[g[1]].cap;
+      $('val' + g[0]).textContent = fmt(out) + ' / ' + cap + ' MW';
+      $('bar' + g[0]).style.width = Math.min(100, out / cap * 100) + '%';
     });
 
     renderStatus();

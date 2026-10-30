@@ -165,6 +165,7 @@
   /* What each single closed line would do if it alone were opened now (no cascade). */
   function contingencies(state) {
     var out = {};
+    var base = solve({ open: state.open, scale: state.scale });
     LINES.forEach(function (l) {
       if (state.open[l.id]) return;
       var open = Object.assign({}, state.open);
@@ -175,11 +176,12 @@
         var q = r.lines[m.id];
         if (q.closed && (!worst || q.loading > r.lines[worst].loading)) worst = m.id;
       });
+      var lost = r.unserved - base.unserved;
       out[l.id] = {
-        unserved: r.unserved,
+        lost: lost,
         worstId: worst,
         worst: worst ? r.lines[worst].loading : 0,
-        verdict: r.unserved > 0.05 ? 'loss' : (worst && r.lines[worst].over) ? 'overload' : 'ok'
+        verdict: lost > 0.05 ? 'loss' : (worst && r.lines[worst].over) ? 'overload' : 'ok'
       };
     });
     return out;
