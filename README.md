@@ -8,7 +8,7 @@ It is a study, not a production system. There is no live data, no SCADA connecti
 
 - Click any breaker on the single-line diagram (or its row in the table) to open or close it.
 - Use the three preset scenarios, change system demand from 60% to 115%, or turn overload protection off.
-- Read the "If it opened alone" column to see which single outages the network survives at the current demand.
+- Read the "If it opened alone" column to see what each single outage would add to the current state: a new or worse overload, or more lost load.
 
 Everything recomputes in the browser on each change: flows, overloads, unserved load and the event log.
 
