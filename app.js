@@ -1,617 +1,457 @@
-// Mindanao Grid Mesh - Industrial Mimic Board & High-Voltage Grid Physics Engine
-// Character Encoding: 100% 7-Bit ASCII - Clean Typography & SCADA Accuracy
+(function () {
+  'use strict';
 
-const SUBSTATIONS = {
-  "cdo-lugait": {
-    kicker: "138kV / 69kV BULK SUBSTATION // HEAVY INDUSTRIAL",
-    title: "Lugait Substation (138kV / 69kV)",
-    coords: "Misamis Oriental Border // Agus-Pulangi Intertie // 8 deg 20'N 124 deg 15'E",
-    nominalVolt: 138.0,
-    baseLoadMW: 84.2,
-    basePF: 0.96,
-    baseTemp: 58.4,
-    breakerId: "brk-lugait",
-    busLevel: 138,
-    isGenerator: false,
-    feeders: [
-      { name: "Holcim Cement Heavy Industrial Trunk", cls: "69kV Dedicated", mw: 42.5, uflsStage: 1 },
-      { name: "Manticao Rural Co-op (MORESCO-I)", cls: "69kV Sub-Tx", mw: 24.1, uflsStage: 2 },
-      { name: "Lugait Municipal Light & Power", cls: "13.8kV Feeder", mw: 17.6, uflsStage: 0 }
-    ]
-  },
-  "cdo-carmen": {
-    kicker: "69kV / 13.8kV PRIMARY URBAN STEP-DOWN // CDO WEST",
-    title: "Carmen 69kV Substation (CDO Urban Hub)",
-    coords: "Barangay Carmen // Cagayan de Oro Riverbank // 8 deg 29'N 124 deg 38'E",
-    nominalVolt: 69.0,
-    baseLoadMW: 62.8,
-    basePF: 0.97,
-    baseTemp: 54.7,
-    breakerId: "brk-carmen",
-    busLevel: 69,
-    isGenerator: false,
-    feeders: [
-      { name: "Carmen Commercial & City Hall Grid", cls: "13.8kV Feeder", mw: 26.4, uflsStage: 0 },
-      { name: "Macasandig & Riverfront District", cls: "13.8kV Feeder", mw: 21.5, uflsStage: 0 },
-      { name: "Kauswagan Medical & Civic Corridor", cls: "13.8kV Critical", mw: 14.9, uflsStage: 0 }
-    ]
-  },
-  "cdo-cugman": {
-    kicker: "69kV / 13.8kV DISTRIBUTION HUB // CDO EAST",
-    title: "Cugman 69kV Substation (CDO East Intertie)",
-    coords: "Cagayan de Oro East // Industrial & Commercial Feeders // 8 deg 28'N 124 deg 41'E",
-    nominalVolt: 69.0,
-    baseLoadMW: 46.4,
-    basePF: 0.98,
-    baseTemp: 51.2,
-    breakerId: "brk-cugman",
-    busLevel: 69,
-    isGenerator: false,
-    feeders: [
-      { name: "Limketkai Commercial Mall Ring", cls: "13.8kV Loop", mw: 18.2, uflsStage: 0 },
-      { name: "Cugman Industrial Food Processing", cls: "13.8kV Dedicated", mw: 16.4, uflsStage: 1 },
-      { name: "Tablon Residential Feeder", cls: "13.8kV Distribution", mw: 11.8, uflsStage: 0 }
-    ]
-  },
-  "agus-4": {
-    kicker: "RUN-OF-RIVER HYDROPOWER GENERATING STATION",
-    title: "Agus IV Hydroelectric Power Plant",
-    coords: "Balo-i, Lanao del Norte // Agus River Cascade // 8 deg 09'N 124 deg 12'E",
-    nominalVolt: 138.0,
-    baseLoadMW: 158.0,
-    basePF: 0.99,
-    baseTemp: 44.1,
-    breakerId: "brk-agus",
-    busLevel: 138,
-    isGenerator: true,
-    feeders: [
-      { name: "Unit 1: Francis Turbine Runner 52.6 MW", cls: "13.8kV Bus", mw: 52.6, uflsStage: 0 },
-      { name: "Unit 2: Francis Turbine Runner 52.6 MW", cls: "13.8kV Bus", mw: 52.6, uflsStage: 0 },
-      { name: "Unit 3: Francis Turbine Runner 52.8 MW", cls: "13.8kV Bus", mw: 52.8, uflsStage: 0 }
-    ]
-  },
-  "pulangi-4": {
-    kicker: "RESERVOIR HYDRO GENERATING FACILITY",
-    title: "Pulangi IV Hydroelectric Power Station",
-    coords: "Maramag, Bukidnon // Pulangi River Basin // 7 deg 48'N 125 deg 02'E",
-    nominalVolt: 138.0,
-    baseLoadMW: 255.0,
-    basePF: 0.99,
-    baseTemp: 42.8,
-    breakerId: "brk-pulangi",
-    busLevel: 138,
-    isGenerator: true,
-    feeders: [
-      { name: "Unit 1: Vertical Francis Hydropower Turbine", cls: "13.8kV Bus", mw: 85.0, uflsStage: 0 },
-      { name: "Unit 2: Vertical Francis Hydropower Turbine", cls: "13.8kV Bus", mw: 85.0, uflsStage: 0 },
-      { name: "Unit 3: Vertical Francis Hydropower Turbine", cls: "13.8kV Bus", mw: 85.0, uflsStage: 0 }
-    ]
-  },
-  "tagoloan": {
-    kicker: "138kV EXTRA HIGH DENSITY HEAVY INDUSTRIAL STEP-DOWN",
-    title: "PHIVIDEC Tagoloan 138kV Substation",
-    coords: "PHIVIDEC Industrial Authority // Tagoloan // 8 deg 32'N 124 deg 45'E",
-    nominalVolt: 138.0,
-    baseLoadMW: 112.4,
-    basePF: 0.94,
-    baseTemp: 62.1,
-    breakerId: "brk-tagoloan",
-    busLevel: 138,
-    isGenerator: false,
-    feeders: [
-      { name: "Mindanao International Container Terminal", cls: "69kV Dedicated", mw: 38.2, uflsStage: 0 },
-      { name: "Heavy Steel Rolling & Smelter Mill", cls: "69kV Dedicated", mw: 30.2, uflsStage: 1 },
-      { name: "PHIVIDEC Agro-Industrial Feeder", cls: "13.8kV Dedicated", mw: 44.0, uflsStage: 2 }
-    ]
-  },
-  "opol": {
-    kicker: "69kV SUB-TRANSMISSION & MUNICIPAL FEEDER",
-    title: "Opol 69kV Substation (MORESCO-I)",
-    coords: "Opol Coastal Sub-transmission // 8 deg 31'N 124 deg 34'E",
-    nominalVolt: 69.0,
-    baseLoadMW: 28.5,
-    basePF: 0.96,
-    baseTemp: 48.9,
-    breakerId: "brk-opol",
-    busLevel: 69,
-    isGenerator: false,
-    feeders: [
-      { name: "Opol Poblacion Commercial Feeder", cls: "13.8kV Feeder", mw: 12.4, uflsStage: 0 },
-      { name: "Barra & Bulua Boundary Tie", cls: "13.8kV Tie", mw: 9.8, uflsStage: 2 },
-      { name: "Coastal Agro-Cold Storage", cls: "13.8kV Feeder", mw: 6.3, uflsStage: 0 }
-    ]
-  }
-};
+  var M = window.GridModel;
+  var NS = 'http://www.w3.org/2000/svg';
+  var TRIP_DELAY = 1100;
 
-// State Variables
-let currentSubKey = "cdo-lugait";
-let breakers = {
-  "brk-agus": true,
-  "brk-lugait": true,
-  "brk-tagoloan": true,
-  "brk-pulangi": true,
-  "brk-opol": true,
-  "brk-carmen": true,
-  "brk-cugman": true
-};
+  /* ---- diagram geometry: one layout for wide screens, one for phones ---- */
 
-let main138TrunkClosed = true;
-let agusDispatchMW = 158.0;
-let pulangiDispatchMW = 255.0;
-let demandScale = 0.85; // Default: 85% normal day load
-let systemFreq = 60.00;
-let ufls1Active = false;
-let ufls2Active = false;
-let blackoutLockout = false;
-
-// Physics Simulation Loop
-document.addEventListener("DOMContentLoaded", () => {
-  renderSubstation(currentSubKey);
-  recalculateGridPhysics();
-  setInterval(gridPhysicsTick, 1500);
-});
-
-// Periodic Physics Jitter & Auto-Governor Tracking
-function gridPhysicsTick() {
-  if (blackoutLockout) return;
-  // Natural micro-jitter: +/- 0.02 Hz
-  const jitter = (Math.random() * 0.04 - 0.02);
-  recalculateGridPhysics(jitter);
-}
-
-// Recalculate Complete Grid Topology, Load Flow, and Frequency
-function recalculateGridPhysics(microJitter = 0.0) {
-  const tape = document.getElementById("printerTape");
-  const now = new Date().toTimeString().split(" ")[0];
-
-  // 1. Determine which generators are connected to 138kV bus
-  const agusOnline = breakers["brk-agus"] && main138TrunkClosed;
-  const pulangiOnline = breakers["brk-pulangi"] && main138TrunkClosed;
-
-  const totalGenMW = (agusOnline ? agusDispatchMW : 0) + (pulangiOnline ? pulangiDispatchMW : 0);
-
-  // 2. Determine which substations are energized
-  // 138kV bus is energized if at least one generator is connected
-  const bus138Energized = (agusOnline || pulangiOnline);
-
-  // 69kV ring is energized if 138kV bus is energized and tie lines exist
-  const bus69Energized = bus138Energized && main138TrunkClosed;
-
-  // Substation energization map
-  const energizedStatus = {};
-  for (const [key, data] of Object.entries(SUBSTATIONS)) {
-    if (data.isGenerator) {
-      energizedStatus[key] = breakers[data.breakerId];
-    } else if (data.busLevel === 138) {
-      energizedStatus[key] = bus138Energized && breakers[data.breakerId];
-    } else {
-      energizedStatus[key] = bus69Energized && breakers[data.breakerId];
-    }
-  }
-
-  // 3. Compute Connected Demand & Apply UFLS
-  let baseDemandMW = 0;
-  for (const [key, data] of Object.entries(SUBSTATIONS)) {
-    if (!data.isGenerator && energizedStatus[key]) {
-      let subLoad = 0;
-      data.feeders.forEach(f => {
-        let feederActive = true;
-        if (ufls1Active && f.uflsStage === 1) feederActive = false;
-        if (ufls2Active && f.uflsStage === 2) feederActive = false;
-        if (feederActive) subLoad += f.mw * demandScale;
-      });
-      baseDemandMW += subLoad;
-    }
-  }
-
-  // 4. Frequency Swing Equation:
-  // Generation vs Demand imbalance
-  const deltaP = totalGenMW - baseDemandMW;
-
-  let targetFreq = 60.00;
-  if (totalGenMW === 0 && baseDemandMW > 0) {
-    targetFreq = 58.00; // Complete blackout
-  } else if (totalGenMW > 0) {
-    // 100 MW deficit drops freq by ~0.65 Hz
-    const freqOffset = deltaP / 160.0;
-    targetFreq = Math.max(58.2, Math.min(61.2, 60.00 + freqOffset));
-  } else {
-    targetFreq = 60.00;
-  }
-
-  systemFreq = parseFloat((targetFreq + microJitter).toFixed(2));
-
-  // 5. Automatic Under-Frequency Load Shedding (UFLS) Logic
-  if (systemFreq < 59.50 && !ufls1Active && !blackoutLockout && totalGenMW > 0) {
-    ufls1Active = true;
-    logSCADA(`[ANSI 81L UFLS STAGE 1 TRIPPED] System freq ${systemFreq} Hz < 59.50 Hz threshold. Shed 89.1 MW heavy industrial feeders!`, "tape-warn");
-    recalculateGridPhysics(0);
-    return;
-  }
-
-  if (systemFreq < 59.20 && !ufls2Active && !blackoutLockout && totalGenMW > 0) {
-    ufls2Active = true;
-    logSCADA(`[ANSI 81L UFLS STAGE 2 TRIPPED] System freq ${systemFreq} Hz < 59.20 Hz critical. Shed 77.9 MW secondary municipal feeders!`, "tape-alert");
-    recalculateGridPhysics(0);
-    return;
-  }
-
-  if (systemFreq <= 58.40 && !blackoutLockout && baseDemandMW > 0) {
-    blackoutLockout = true;
-    logSCADA(`[ANSI 81U CATASTROPHIC BLACKOUT] System frequency collapsed to ${systemFreq} Hz. Cascade anti-islanding lockout executed.`, "tape-alert");
-    main138TrunkClosed = false;
-    for (let b in breakers) breakers[b] = false;
-    updateBreakerVisuals();
-  }
-
-  // 6. Update Analog Meter & Synchronoscope Needle
-  const needle = document.getElementById("analogNeedle");
-  const ledFreq = document.getElementById("ledFreq");
-  const fasciaFreq = document.getElementById("fasciaFreq");
-
-  if (needle && ledFreq) {
-    const angle = (systemFreq - 60.00) * 30.0;
-    needle.style.transform = `rotate(${Math.max(-55, Math.min(55, angle))}deg)`;
-    ledFreq.innerText = `${systemFreq.toFixed(2)} Hz`;
-    if (fasciaFreq) fasciaFreq.innerText = `SYSTEM FREQ: ${systemFreq.toFixed(2)} Hz`;
-
-    ledFreq.classList.remove("alert-freq", "warn-freq");
-    if (systemFreq < 59.50 || systemFreq > 60.50) {
-      ledFreq.classList.add("alert-freq");
-    } else if (systemFreq < 59.90 || systemFreq > 60.10) {
-      ledFreq.classList.add("warn-freq");
-    }
-  }
-
-  // 7. Update Annunciators
-  updateAnnunciators(bus138Energized, bus69Energized, energizedStatus);
-
-  // 8. Update Busbars on SVG
-  updateSVGVisuals(bus138Energized, bus69Energized, energizedStatus);
-
-  // 9. Update Active Substation Bay Info
-  renderSubstation(currentSubKey);
-}
-
-// Update Annunciator Lamps
-function updateAnnunciators(bus138Energized, bus69Energized, energizedStatus) {
-  const annSync = document.getElementById("annSync");
-  const annTrip = document.getElementById("annTrip");
-  const annUfls1 = document.getElementById("annUfls1");
-  const annUfls2 = document.getElementById("annUfls2");
-  const annHydro = document.getElementById("annHydro");
-  const annDeenergized = document.getElementById("annDeenergized");
-  const boardStatus = document.getElementById("boardStatusTxt");
-
-  const anyTripped = Object.values(breakers).some(b => !b) || !main138TrunkClosed;
-  const anyDeenergized = Object.values(energizedStatus).some(e => !e);
-  const hydroOnline = (breakers["brk-agus"] || breakers["brk-pulangi"]) && bus138Energized;
-
-  // Grid Sync
-  if (Math.abs(systemFreq - 60.00) <= 0.08 && !anyTripped && !blackoutLockout) {
-    annSync.className = "annunciator-box lamp-active-green";
-  } else {
-    annSync.className = "annunciator-box";
-  }
-
-  // Trip Relay
-  if (anyTripped || blackoutLockout) {
-    annTrip.className = "annunciator-box lamp-active-red";
-  } else {
-    annTrip.className = "annunciator-box";
-  }
-
-  // UFLS 1 & 2
-  annUfls1.className = ufls1Active ? "annunciator-box lamp-active-amber" : "annunciator-box";
-  annUfls2.className = ufls2Active ? "annunciator-box lamp-active-red" : "annunciator-box";
-
-  // Hydro Dispatch
-  annHydro.className = hydroOnline ? "annunciator-box lamp-active-green" : "annunciator-box";
-
-  // Bus De-energized
-  annDeenergized.className = anyDeenergized ? "annunciator-box lamp-active-red" : "annunciator-box";
-
-  // Islanding Status Text
-  if (blackoutLockout) {
-    boardStatus.innerText = "TOTAL BLACKOUT // LOCKOUT";
-    boardStatus.style.color = "#ef4444";
-  } else if (anyTripped) {
-    boardStatus.innerText = "ISLANDED // CONTINGENCY ROUTE";
-    boardStatus.style.color = "#f59e0b";
-  } else {
-    boardStatus.innerText = "CLOSED LOOP (NORMAL)";
-    boardStatus.style.color = "#22c55e";
-  }
-}
-
-// Update SVG Busbars & Node Styles
-function updateSVGVisuals(bus138Energized, bus69Energized, energizedStatus) {
-  const bus138 = document.getElementById("bus138");
-  const bus69 = document.getElementById("bus69");
-
-  if (bus138) {
-    if (bus138Energized) {
-      bus138.classList.add("bus-flow-active");
-      bus138.classList.remove("bus-dead");
-    } else {
-      bus138.classList.remove("bus-flow-active");
-      bus138.classList.add("bus-dead");
-    }
-  }
-
-  if (bus69) {
-    if (bus69Energized) {
-      bus69.classList.add("bus-flow-active");
-      bus69.classList.remove("bus-dead");
-    } else {
-      bus69.classList.remove("bus-flow-active");
-      bus69.classList.add("bus-dead");
-    }
-  }
-
-  // Update node boxes
-  for (const [key, data] of Object.entries(SUBSTATIONS)) {
-    const nodeEl = document.getElementById(`node-${key}`);
-    const isEn = energizedStatus[key];
-    if (nodeEl) {
-      if (isEn) {
-        nodeEl.classList.remove("node-deenergized");
-      } else {
-        nodeEl.classList.add("node-deenergized");
+  var LAYOUTS = {
+    wide: {
+      vb: [1000, 500],
+      nodes: {
+        AGUS: { x: 90,  y: 140, side: 'down' },
+        LUG:  { x: 330, y: 140, side: 'up' },
+        TAG:  { x: 700, y: 140, side: 'up' },
+        PUL:  { x: 910, y: 140, side: 'down' },
+        OPO:  { x: 330, y: 400, side: 'down' },
+        CAR:  { x: 515, y: 400, side: 'down' },
+        CUG:  { x: 700, y: 400, side: 'down' }
+      },
+      lines: {
+        'CB-101': { t: 0.5,  lab: 'above' },
+        'CB-102': { t: 0.5,  lab: 'above' },
+        'CB-103': { t: 0.5,  lab: 'above' },
+        'CB-201': { t: 0.62, lab: 'right', xf: 0.24 },
+        'CB-202': { t: 0.5,  lab: 'above' },
+        'CB-203': { t: 0.5,  lab: 'above' },
+        'CB-204': { t: 0.42, lab: 'right', xf: 0.78 }
       }
-    }
-
-    // Dynamic subtitle on SVG
-    const specEl = document.getElementById(`node-spec-${key.replace("cdo-", "")}`);
-    if (specEl) {
-      if (!isEn) {
-        specEl.textContent = "0.0 MW // DE-ENERGIZED";
-      } else if (data.isGenerator) {
-        const mw = key === "agus-4" ? agusDispatchMW : pulangiDispatchMW;
-        specEl.textContent = `${mw.toFixed(0)} MW // Dispatched`;
-      } else {
-        let curMW = 0;
-        data.feeders.forEach(f => {
-          let active = true;
-          if (ufls1Active && f.uflsStage === 1) active = false;
-          if (ufls2Active && f.uflsStage === 2) active = false;
-          if (active) curMW += f.mw * demandScale;
-        });
-        specEl.textContent = `Load: ${curMW.toFixed(1)} MW // Active`;
-      }
-    }
-  }
-}
-
-// Select Substation on Mimic Board
-function selectSubstation(key) {
-  currentSubKey = key;
-
-  document.querySelectorAll(".mimic-node").forEach(n => n.classList.remove("active-node"));
-  const node = document.getElementById(`node-${key}`);
-  if (node) node.classList.add("active-node");
-
-  renderSubstation(key);
-}
-
-// Render Substation Details in Bay
-function renderSubstation(key) {
-  const data = SUBSTATIONS[key];
-  if (!data) return;
-
-  const isEnergized = checkNodeEnergized(key);
-
-  document.getElementById("bayKicker").innerText = data.kicker;
-  document.getElementById("bayTitle").innerText = data.title;
-  document.getElementById("bayCoords").innerText = data.coords;
-
-  const valVoltEl = document.getElementById("valVolt");
-  const valPowerEl = document.getElementById("valPower");
-  const valPFEl = document.getElementById("valPF");
-  const valTempEl = document.getElementById("valTemp");
-
-  if (!isEnergized) {
-    valVoltEl.innerText = "0.0 kV";
-    valPowerEl.innerText = "0.0 MW";
-    valPFEl.innerText = "0.00 ZERO";
-    valTempEl.innerText = "31.2 deg C";
-  } else if (data.isGenerator) {
-    const mw = key === "agus-4" ? agusDispatchMW : pulangiDispatchMW;
-    valVoltEl.innerText = `${data.nominalVolt.toFixed(1)} kV`;
-    valPowerEl.innerText = `${mw.toFixed(1)} MW`;
-    valPFEl.innerText = `${data.basePF.toFixed(2)} LEAD`;
-    valTempEl.innerText = `${data.baseTemp.toFixed(1)} deg C`;
-  } else {
-    let subLoad = 0;
-    data.feeders.forEach(f => {
-      let active = true;
-      if (ufls1Active && f.uflsStage === 1) active = false;
-      if (ufls2Active && f.uflsStage === 2) active = false;
-      if (active) subLoad += f.mw * demandScale;
-    });
-
-    const drop = (subLoad / data.baseLoadMW) * 0.4;
-    const volt = (data.nominalVolt - drop).toFixed(1);
-    valVoltEl.innerText = `${volt} kV`;
-    valPowerEl.innerText = `${subLoad.toFixed(1)} MW`;
-    valPFEl.innerText = `${data.basePF.toFixed(2)} LAG`;
-    valTempEl.innerText = `${(data.baseTemp + drop * 2).toFixed(1)} deg C`;
-  }
-
-  // Downstream Feeders Table
-  const tbody = document.getElementById("bayFeedersBody");
-  tbody.innerHTML = data.feeders.map(f => {
-    let shed = false;
-    let mwDisplay = `${(f.mw * demandScale).toFixed(1)} MW`;
-
-    if (!isEnergized) {
-      shed = true;
-      mwDisplay = "OFFLINE";
-    } else if (ufls1Active && f.uflsStage === 1) {
-      shed = true;
-      mwDisplay = "UFLS-1 SHED";
-    } else if (ufls2Active && f.uflsStage === 2) {
-      shed = true;
-      mwDisplay = "UFLS-2 SHED";
-    }
-
-    return `
-      <tr>
-        <td class="${shed ? 'feeder-shed' : ''}">${f.name}</td>
-        <td style="color: #64748b;">${f.cls}</td>
-        <td class="feeder-mw-col ${shed ? 'feeder-shed' : ''}">${mwDisplay}</td>
-      </tr>
-    `;
-  }).join("");
-}
-
-function checkNodeEnergized(key) {
-  const data = SUBSTATIONS[key];
-  if (!data) return false;
-  if (data.isGenerator) return breakers[data.breakerId];
-
-  const agusOnline = breakers["brk-agus"] && main138TrunkClosed;
-  const pulangiOnline = breakers["brk-pulangi"] && main138TrunkClosed;
-  const bus138Energized = (agusOnline || pulangiOnline);
-  const bus69Energized = bus138Energized && main138TrunkClosed;
-
-  if (data.busLevel === 138) {
-    return bus138Energized && breakers[data.breakerId];
-  } else {
-    return bus69Energized && breakers[data.breakerId];
-  }
-}
-
-// Toggle an Individual Breaker
-function toggleSingleBreaker(id) {
-  if (blackoutLockout) {
-    logSCADA(`[INTERLOCK FAULT] Cannot operate ${id.toUpperCase()}: System in blackout lockout! Run Reclose & Sync.`, "tape-alert");
-    return;
-  }
-
-  breakers[id] = !breakers[id];
-  updateBreakerVisuals();
-
-  if (breakers[id]) {
-    logSCADA(`[ANSI 25 SYNCH] Breaker ${id.toUpperCase()} closed and latched. Interconnection energized.`, "tape-ok");
-  } else {
-    logSCADA(`[ANSI 50/51 OVERCURRENT] Breaker ${id.toUpperCase()} manually opened. Islanding circuit branch.`, "tape-warn");
-  }
-
-  recalculateGridPhysics(0);
-}
-
-function updateBreakerVisuals() {
-  for (let id in breakers) {
-    const el = document.getElementById(id);
-    if (el) {
-      if (breakers[id]) {
-        el.classList.remove("brk-open");
-        el.classList.add("brk-closed");
-      } else {
-        el.classList.remove("brk-closed");
-        el.classList.add("brk-open");
-      }
-    }
-  }
-}
-
-// Trip Main 138kV Trunk (N-1 Contingency Test)
-function tripMainTieLine() {
-  main138TrunkClosed = false;
-
-  // Trip bulk breakers
-  breakers["brk-agus"] = false;
-  breakers["brk-pulangi"] = false;
-  breakers["brk-lugait"] = false;
-  breakers["brk-tagoloan"] = false;
-
-  updateBreakerVisuals();
-  logSCADA(`[ANSI 50/51 TRIP RELAY] 138kV Bulk Transmission Trunk overcurrent lockout initiated!`, "tape-alert");
-  logSCADA(`[N-1 CONTINGENCY] Generation disconnected from load center. Rapid frequency drop!`, "tape-alert");
-
-  recalculateGridPhysics(0);
-}
-
-// Reclose & Synchronize
-function recloseTieLine() {
-  blackoutLockout = false;
-  main138TrunkClosed = true;
-  ufls1Active = false;
-  ufls2Active = false;
-
-  for (let b in breakers) breakers[b] = true;
-  updateBreakerVisuals();
-
-  logSCADA(`[ANSI 25 SYNCHROCHECK IN-PHASE] Phase angle 0.0 deg. All 138kV and 69kV breakers reclosed.`, "tape-ok");
-  logSCADA(`[SCADA AGC RESTORED] Normal closed-loop 60.00 Hz dispatch resumed.`, "tape-ok");
-
-  recalculateGridPhysics(0);
-}
-
-// Adjust Regional Demand Profile
-function setDemandProfile(scale, label, btnEl) {
-  demandScale = scale;
-  document.querySelectorAll(".demand-btn").forEach(b => b.classList.remove("active"));
-  if (btnEl) btnEl.classList.add("active");
-  document.getElementById("demandScaleLabel").innerText = label;
-
-  logSCADA(`[SCADA AGC] Regional demand profile adjusted to ${label}.`, "tape-ok");
-  recalculateGridPhysics(0);
-}
-
-// Adjust Generation Dispatch
-function adjustAgusGeneration(val) {
-  agusDispatchMW = parseFloat(val);
-  document.getElementById("agusSliderVal").innerText = `${val} MW`;
-  recalculateGridPhysics(0);
-}
-
-function adjustPulangiGeneration(val) {
-  pulangiDispatchMW = parseFloat(val);
-  document.getElementById("pulangiSliderVal").innerText = `${val} MW`;
-  recalculateGridPhysics(0);
-}
-
-// Logger utility
-function logSCADA(msg, cls = "tape-ok") {
-  const tape = document.getElementById("printerTape");
-  if (!tape) return;
-  const now = new Date().toTimeString().split(" ")[0];
-  const item = document.createElement("div");
-  item.className = cls;
-  item.innerHTML = `<strong>[${now}]</strong> // ${msg}`;
-  tape.insertBefore(item, tape.firstChild);
-
-  // Trim to 40 items max
-  while (tape.children.length > 40) {
-    tape.removeChild(tape.lastChild);
-  }
-}
-
-// SCADA Telemetry Export
-function exportGridTelemetry() {
-  const exportPayload = {
-    system: "Mindanao Grid Mesh - 138kV/69kV SCADA System",
-    timestamp: new Date().toISOString(),
-    frequencyHz: systemFreq,
-    islandingStatus: document.getElementById("boardStatusTxt").innerText,
-    demandScaleMultiplier: demandScale,
-    generationDispatch: {
-      agusIV_MW: agusDispatchMW,
-      pulangiIV_MW: pulangiDispatchMW
     },
-    breakerStatus: breakers,
-    substations: SUBSTATIONS,
-    ufls1_Active: ufls1Active,
-    ufls2_Active: ufls2Active
+    tall: {
+      vb: [400, 610],
+      nodes: {
+        AGUS: { x: 145, y: 50,  side: 'left' },
+        PUL:  { x: 255, y: 50,  side: 'right' },
+        LUG:  { x: 145, y: 200, side: 'left' },
+        TAG:  { x: 255, y: 200, side: 'right' },
+        OPO:  { x: 145, y: 360, side: 'left' },
+        CAR:  { x: 145, y: 520, side: 'left' },
+        CUG:  { x: 255, y: 520, side: 'right' }
+      },
+      lines: {
+        'CB-101': { t: 0.5,  lab: 'left' },
+        'CB-102': { t: 0.5,  lab: 'right' },
+        'CB-103': { t: 0.5,  lab: 'above' },
+        'CB-201': { t: 0.62, lab: 'right', xf: 0.24 },
+        'CB-202': { t: 0.5,  lab: 'right' },
+        'CB-203': { t: 0.5,  lab: 'below' },
+        'CB-204': { t: 0.42, lab: 'left', xf: 0.8 }
+      }
+    }
   };
 
-  const jsonStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportPayload, null, 2));
-  const downloadAnchor = document.createElement("a");
-  downloadAnchor.setAttribute("href", jsonStr);
-  downloadAnchor.setAttribute("download", `mindanao_grid_scada_${Date.now()}.json`);
-  document.body.appendChild(downloadAnchor);
-  downloadAnchor.click();
-  downloadAnchor.remove();
-}
+  var BASE_MW = M.BUSES.reduce(function (s, b) { return s + (b.load || 0); }, 0);
+  var LAB_W = 86, LAB_H = 38;
+
+  /* ---- state ---- */
+
+  var state = { open: {}, scale: 1, protect: true };
+  var tripped = {};
+  var t0 = Date.now();
+  var timer = null;
+  var lastUnserved = 0;
+  var result = null;
+  var refs = null;
+  var layoutName = null;
+
+  var $ = function (id) { return document.getElementById(id); };
+  var mq = window.matchMedia('(max-width: 720px)');
+
+  function el(name, attrs, parent, text) {
+    var n = document.createElementNS(NS, name);
+    for (var k in attrs) n.setAttribute(k, attrs[k]);
+    if (text != null) n.textContent = text;
+    if (parent) parent.appendChild(n);
+    return n;
+  }
+
+  function fmt(v) { return Math.round(v); }
+  function pct(v) { return Math.round(v * 100); }
+
+  /* ---- build the SVG for a layout ---- */
+
+  function build(name) {
+    layoutName = name;
+    var L = LAYOUTS[name];
+    var host = $('diagram');
+    var old = host.querySelector('svg');
+    if (old) host.removeChild(old);
+
+    var svg = el('svg', { viewBox: '0 0 ' + L.vb[0] + ' ' + L.vb[1], 'class': 'sld sld-' + name, focusable: 'false' }, host);
+    refs = { lines: {}, buses: {} };
+
+    var gLines = el('g', {}, svg), gBus = el('g', {}, svg), gBrk = el('g', {}, svg);
+
+    M.LINES.forEach(function (ln) {
+      var a = L.nodes[ln.from], b = L.nodes[ln.to], cfg = L.lines[ln.id];
+      var r = { cfg: cfg };
+      var g = el('g', { 'class': 'line kv' + ln.kv }, gLines);
+      var d = 'M' + a.x + ',' + a.y + ' L' + b.x + ',' + b.y;
+      r.base = el('path', { d: d, 'class': 'wire' }, g);
+      r.flow = el('path', { d: d, 'class': 'flow' }, g);
+
+      if (cfg.xf != null) {
+        var fx = a.x + (b.x - a.x) * cfg.xf, fy = a.y + (b.y - a.y) * cfg.xf;
+        var horiz = Math.abs(b.x - a.x) > Math.abs(b.y - a.y);
+        var dx = horiz ? 9 : 0, dy = horiz ? 0 : 9;
+        var xf = el('g', { 'class': 'xf' }, g);
+        el('circle', { cx: fx - dx, cy: fy - dy, r: 13 }, xf);
+        el('circle', { cx: fx + dx, cy: fy + dy, r: 13 }, xf);
+      }
+
+      /* breaker and label sit at the same point on the line */
+      var px = a.x + (b.x - a.x) * cfg.t, py = a.y + (b.y - a.y) * cfg.t;
+      var bg = el('g', {
+        'class': 'breaker', role: 'button', tabindex: '0', 'data-id': ln.id,
+        transform: 'translate(' + px + ',' + py + ')'
+      }, gBrk);
+      el('rect', { x: -24, y: -24, width: 48, height: 48, 'class': 'hit' }, bg);
+      el('rect', { x: -11, y: -11, width: 22, height: 22, 'class': 'sym' }, bg);
+      el('path', { d: 'M-7,7 L7,-7', 'class': 'slash' }, bg);
+      r.brk = bg;
+
+      var cx = 0, cy = 0;
+      if (cfg.lab === 'above') cy = -(22 + LAB_H / 2);
+      else if (cfg.lab === 'below') cy = 22 + LAB_H / 2;
+      else if (cfg.lab === 'right') cx = 20 + LAB_W / 2;
+      else cx = -(20 + LAB_W / 2);
+      var lab = el('g', { 'class': 'tag', transform: 'translate(' + (px + cx) + ',' + (py + cy) + ')', 'aria-hidden': 'true' }, gBrk);
+      r.labBox = el('rect', { x: -LAB_W / 2, y: -LAB_H / 2, width: LAB_W, height: LAB_H, 'class': 'tag-box' }, lab);
+      el('text', { x: -30, y: -4, 'class': 'tag-id' }, lab, ln.id);
+      r.labArrow = el('path', { d: 'M-5,-6 L6,0 L-5,6 Z', 'class': 'tag-arrow' }, lab);
+      r.labVal = el('text', { x: -17, y: 13, 'class': 'tag-val' }, lab, '');
+      r.lab = lab;
+
+      r.angle = Math.atan2(b.y - a.y, b.x - a.x) * 180 / Math.PI;
+      refs.lines[ln.id] = r;
+    });
+
+    M.BUSES.forEach(function (bus) {
+      var n = L.nodes[bus.id];
+      var r = {};
+      var g = el('g', { 'class': 'bus ' + bus.kind }, gBus);
+      var tx = n.x, ty = n.y, anchor = 'middle';
+      var off = 40;
+
+      if (bus.kind === 'gen') {
+        el('circle', { cx: n.x, cy: n.y, r: 27, 'class': 'gen-disc' }, g);
+        el('text', { x: n.x, y: n.y + 8, 'class': 'gen-g' }, g, 'G');
+      } else {
+        el('path', { d: 'M' + (n.x - 32) + ',' + n.y + ' H' + (n.x + 32), 'class': 'bar' }, g);
+        /* load arrow pointing away from the bus */
+        var dir = { up: [0, -1], down: [0, 1], left: [-1, 0], right: [1, 0] }[n.side];
+        if (n.side === 'left' || n.side === 'right') dir = [0, 0];
+        if (dir[1] !== 0) {
+          var ay = n.y + dir[1] * 12, tip = n.y + dir[1] * 26;
+          r.arrow = el('path', { d: 'M' + n.x + ',' + ay + ' V' + (tip - dir[1] * 6) + ' M' + (n.x - 6) + ',' + (tip - dir[1] * 8) + ' L' + n.x + ',' + tip + ' L' + (n.x + 6) + ',' + (tip - dir[1] * 8), 'class': 'load-arrow' }, g);
+        }
+      }
+
+      var lx = n.x, ly1, ly2;
+      if (n.side === 'up')   { ly1 = n.y - off - 18; ly2 = n.y - off + 2; }
+      if (n.side === 'down') { ly1 = n.y + off + 14; ly2 = n.y + off + 34; }
+      if (n.side === 'left' || n.side === 'right') {
+        var w = bus.kind === 'gen' ? 38 : 42;
+        lx = n.x + (n.side === 'left' ? -w : w);
+        anchor = n.side === 'left' ? 'end' : 'start';
+        ly1 = n.y - 2; ly2 = n.y + 17;
+      }
+      r.name = el('text', { x: lx, y: ly1, 'class': 'bus-name', 'text-anchor': anchor }, g, bus.name);
+      r.val = el('text', { x: lx, y: ly2, 'class': 'bus-val', 'text-anchor': anchor }, g, '');
+      r.g = g;
+      refs.buses[bus.id] = r;
+    });
+
+    bindBreakers(svg);
+  }
+
+  function bindBreakers(svg) {
+    svg.addEventListener('click', function (e) {
+      var t = e.target.closest ? e.target.closest('.breaker') : null;
+      if (t) toggle(t.getAttribute('data-id'), true);
+    });
+    svg.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      var t = e.target.closest ? e.target.closest('.breaker') : null;
+      if (!t) return;
+      e.preventDefault();
+      toggle(t.getAttribute('data-id'), true);
+    });
+  }
+
+  /* ---- table ---- */
+
+  var BUS_NAME = {};
+  M.BUSES.forEach(function (b) { BUS_NAME[b.id] = b.name; });
+  var rowRefs = {};
+
+  function buildTable() {
+    var body = $('lineRows');
+    M.LINES.forEach(function (ln) {
+      var tr = document.createElement('tr');
+      tr.innerHTML =
+        '<th scope="row" data-label="Breaker"><button type="button" class="brk-btn" data-id="' + ln.id + '">' +
+          '<svg viewBox="0 0 16 16" aria-hidden="true"><rect x="2" y="2" width="12" height="12"/></svg>' +
+          '<span class="brk-id">' + ln.id + '</span><span class="brk-state"></span></button></th>' +
+        '<td data-label="Path">' + BUS_NAME[ln.from] + ' to ' + BUS_NAME[ln.to] + ' <span class="kv-tag">' + ln.kv + ' kV</span></td>' +
+        '<td class="num" data-label="Flow"><span class="c-flow"></span></td>' +
+        '<td data-label="Loading"><span class="load-meter"><i></i></span><span class="c-load"></span></td>' +
+        '<td data-label="If it opened alone" class="c-cont"></td>';
+      body.appendChild(tr);
+      rowRefs[ln.id] = {
+        tr: tr,
+        btn: tr.querySelector('.brk-btn'),
+        state: tr.querySelector('.brk-state'),
+        flow: tr.querySelector('.c-flow'),
+        meter: tr.querySelector('.load-meter i'),
+        load: tr.querySelector('.c-load'),
+        cont: tr.querySelector('.c-cont')
+      };
+    });
+    body.addEventListener('click', function (e) {
+      var b = e.target.closest ? e.target.closest('.brk-btn') : null;
+      if (b) toggle(b.getAttribute('data-id'), true);
+    });
+  }
+
+  /* ---- log ---- */
+
+  function stamp() {
+    var s = Math.floor((Date.now() - t0) / 1000);
+    var m = Math.floor(s / 60);
+    s = s % 60;
+    return 'T+' + (m < 10 ? '0' : '') + m + ':' + (s < 10 ? '0' : '') + s;
+  }
+
+  function log(text, kind) {
+    var li = document.createElement('li');
+    if (kind) li.className = kind;
+    var t = document.createElement('time');
+    t.textContent = stamp();
+    li.appendChild(t);
+    li.appendChild(document.createTextNode(' ' + text));
+    var ol = $('log');
+    ol.insertBefore(li, ol.firstChild);
+    while (ol.children.length > 40) ol.removeChild(ol.lastChild);
+  }
+
+  /* ---- actions ---- */
+
+  function toggle(id, byUser) {
+    var wasOpen = !!state.open[id];
+    delete tripped[id];
+    if (wasOpen) delete state.open[id]; else state.open[id] = true;
+    log(id + (wasOpen ? ' closed' : ' opened') + (byUser ? ' by operator' : ''), wasOpen ? 'info' : 'act');
+    evaluate();
+  }
+
+  function applyScenario(name) {
+    var sets = { tie: ['CB-103'], coast: ['CB-202'], pulangi: ['CB-102'] };
+    var titles = { tie: 'the 138 kV tie', coast: 'the Opol to Carmen section', pulangi: 'the Pulangi IV connection' };
+    state.open = {};
+    tripped = {};
+    sets[name].forEach(function (id) { state.open[id] = true; });
+    log('Reset, then opened ' + sets[name].join(', ') + ' (' + titles[name] + ')', 'act');
+    evaluate();
+  }
+
+  function reset() {
+    state.open = {};
+    tripped = {};
+    log('All breakers closed', 'info');
+    evaluate();
+  }
+
+  /* ---- evaluate and render ---- */
+
+  function evaluate() {
+    clearTimeout(timer);
+    timer = null;
+    result = M.solve(state);
+    render();
+
+    var unserved = result.unserved;
+    if (Math.abs(unserved - lastUnserved) > 0.5) {
+      log(unserved > 0.5
+        ? 'Unserved load is now ' + fmt(unserved) + ' MW of ' + fmt(result.demand) + ' MW'
+        : 'All load served again', unserved > 0.5 ? 'warn' : 'info');
+      lastUnserved = unserved;
+    }
+
+    var next = M.nextOverload(result);
+    if (next && state.protect) {
+      timer = setTimeout(function () {
+        var r = M.solve(state);
+        var again = M.nextOverload(r);
+        if (!again) { evaluate(); return; }
+        log(again + ' carries ' + pct(r.lines[again].loading) + '% of its rating; overload protection opens it', 'warn');
+        state.open[again] = true;
+        tripped[again] = true;
+        evaluate();
+      }, TRIP_DELAY);
+    }
+  }
+
+  function render() {
+    var r = result;
+
+    M.LINES.forEach(function (ln) {
+      var q = r.lines[ln.id], ref = refs.lines[ln.id], row = rowRefs[ln.id];
+      var cls = 'line kv' + ln.kv + (q.live ? ' live' : ' dead') + (q.over ? ' over' : '') + (q.closed ? '' : ' isopen');
+      ref.base.parentNode.setAttribute('class', cls);
+      var speed = q.live ? Math.max(0.5, 1.6 - q.loading) : 0;
+      ref.flow.style.animationDuration = speed + 's';
+      ref.flow.classList.toggle('rev', q.flow < 0);
+      ref.brk.setAttribute('class', 'breaker ' + (q.closed ? 'closed' : 'open') + (q.over ? ' over' : ''));
+      ref.brk.setAttribute('aria-label', ln.id + ', ' + BUS_NAME[ln.from] + ' to ' + BUS_NAME[ln.to] + ', ' +
+        (q.closed ? 'closed, ' + fmt(Math.abs(q.flow)) + ' megawatts, ' + pct(q.loading) + ' percent of rating. Activate to open.' : 'open. Activate to close.'));
+      ref.lab.setAttribute('class', 'tag' + (q.over ? ' over' : '') + (q.closed ? '' : ' isopen') + (q.closed && !q.live ? ' dead' : '') + (!q.closed && tripped[ln.id] ? ' tripped' : ''));
+
+      var flowing = q.closed && q.live && Math.abs(q.flow) >= 0.5;
+      ref.labArrow.style.display = flowing ? '' : 'none';
+      ref.labArrow.setAttribute('transform', 'translate(-30,6) rotate(' + (q.flow >= 0 ? ref.angle : ref.angle + 180) + ')');
+      ref.labVal.setAttribute('x', flowing ? -17 : -30);
+      if (!q.closed) ref.labVal.textContent = tripped[ln.id] ? 'tripped' : 'open';
+      else if (!q.live) ref.labVal.textContent = 'dead';
+      else ref.labVal.textContent = fmt(Math.abs(q.flow)) + ' MW';
+
+      row.btn.setAttribute('aria-pressed', q.closed ? 'false' : 'true');
+      row.btn.setAttribute('aria-label', ln.id + ' is ' + (q.closed ? 'closed. Open it.' : 'open. Close it.'));
+      row.btn.className = 'brk-btn ' + (q.closed ? 'closed' : 'open');
+      row.state.textContent = q.closed ? 'closed' : tripped[ln.id] ? 'tripped' : 'open';
+      row.flow.textContent = !q.closed ? '—' : !q.live ? 'dead' : fmt(Math.abs(q.flow)) + ' MW';
+      row.load.textContent = !q.live ? '' : pct(q.loading) + '% of ' + ln.rating;
+      row.meter.style.width = Math.min(100, pct(q.loading)) + '%';
+      row.meter.parentNode.className = 'load-meter' + (q.over ? ' over' : q.loading > 0.8 ? ' high' : '');
+      row.tr.className = q.over ? 'over' : '';
+    });
+
+    M.BUSES.forEach(function (bus) {
+      var b = r.buses[bus.id], ref = refs.buses[bus.id];
+      ref.g.setAttribute('class', 'bus ' + bus.kind + (b.live ? '' : ' dead') + (b.unserved > 0.5 && b.live ? ' short' : ''));
+      if (bus.kind === 'gen') {
+        ref.val.textContent = r.islands[b.island].buses.length === 1
+          ? 'offline' : fmt(b.gen) + ' / ' + bus.cap + ' MW';
+      } else if (!b.live) {
+        ref.val.textContent = fmt(b.load) + ' MW lost';
+      } else if (b.unserved > 0.5) {
+        ref.val.textContent = fmt(b.served) + ' of ' + fmt(b.load) + ' MW';
+      } else {
+        ref.val.textContent = fmt(b.load) + ' MW';
+      }
+    });
+
+    /* contingency column */
+    var cont = M.contingencies(state);
+    M.LINES.forEach(function (ln) {
+      var cell = rowRefs[ln.id].cont, c = cont[ln.id];
+      if (!c) { cell.textContent = 'Already open'; cell.className = 'c-cont muted'; return; }
+      if (c.verdict === 'ok') { cell.textContent = 'No new overload, nothing more lost'; cell.className = 'c-cont ok'; }
+      else if (c.verdict === 'overload') { cell.textContent = 'Overloads ' + c.worstId + ' at ' + pct(c.worst) + '%'; cell.className = 'c-cont warn'; }
+      else { cell.textContent = 'Loses ' + fmt(c.lost) + ' MW more load'; cell.className = 'c-cont bad'; }
+    });
+
+    /* readouts */
+    $('rDemand').textContent = fmt(r.demand) + ' MW';
+    $('rServed').textContent = fmt(r.served) + ' MW';
+    $('rUnserved').textContent = fmt(r.unserved) + ' MW';
+    $('rUnserved').parentNode.className = 'r-un' + (r.unserved > 0.5 ? ' bad' : '');
+    [['Agus', 'AGUS'], ['Pul', 'PUL']].forEach(function (g) {
+      var out = r.buses[g[1]].gen, cap = M.BUS[g[1]].cap;
+      $('val' + g[0]).textContent = fmt(out) + ' / ' + cap + ' MW';
+      $('bar' + g[0]).style.width = Math.min(100, out / cap * 100) + '%';
+    });
+
+    renderStatus();
+  }
+
+  function renderStatus() {
+    var r = result, box = $('status'), txt = $('statusText');
+    var overIds = M.LINES.filter(function (l) { return r.lines[l.id].closed && r.lines[l.id].over; });
+    var over = overIds.map(function (l) { return l.id + ' at ' + pct(r.lines[l.id].loading) + '%'; });
+    var dead = M.BUSES.filter(function (b) { return b.kind === 'load' && !r.buses[b.id].live; })
+      .map(function (b) { return b.name; });
+    var shed = M.BUSES.some(function (b) { return r.buses[b.id].live && r.buses[b.id].unserved > 0.5; });
+    var guard = state.protect ? ' Overload protection opens it in a moment.' : ' Protection is off, so it stays closed.';
+
+    var state_, msg;
+    if (r.unserved > 0.5) {
+      state_ = 'bad';
+      msg = fmt(r.unserved) + ' MW of ' + fmt(r.demand) + ' MW is not being served.';
+      if (dead.length) msg += ' No source reaches ' + list(dead) + '.';
+      if (shed) msg += ' A separated island is short of generation, so its load is shed pro rata.';
+      if (over.length) msg += ' Over rating: ' + list(over) + '.';
+    } else if (over.length) {
+      state_ = 'warn';
+      msg = (over.length === 1 ? overIds[0].id + ' is carrying ' + pct(r.lines[overIds[0].id].loading) + '% of its rating.'
+                               : 'Over rating: ' + list(over) + '.') + guard;
+    } else {
+      state_ = 'ok';
+      var openN = M.LINES.filter(function (l) { return state.open[l.id]; }).length;
+      msg = 'All ' + fmt(r.demand) + ' MW served, every line within its rating.' + (openN ? ' ' + openN + (openN === 1 ? ' breaker is' : ' breakers are') + ' open.' : ' Every breaker is closed.');
+    }
+    box.setAttribute('data-state', state_);
+    txt.textContent = msg;
+  }
+
+  function list(a) {
+    if (a.length < 2) return a[0] || '';
+    return a.slice(0, -1).join(', ') + ' and ' + a[a.length - 1];
+  }
+
+  /* ---- wiring ---- */
+
+  function layoutFor() { return mq.matches ? 'tall' : 'wide'; }
+
+  function relayout() {
+    var name = layoutFor();
+    if (name === layoutName) return;
+    build(name);
+    if (result) render();
+  }
+
+  function init() {
+    buildTable();
+    build(layoutFor());
+
+    var demand = $('demand');
+    demand.addEventListener('input', function () {
+      state.scale = demand.value / 100;
+      var total = BASE_MW * state.scale;
+      $('demandOut').textContent = demand.value + '% · ' + fmt(total) + ' MW';
+      evaluate();
+    });
+    demand.addEventListener('change', function () {
+      log('Demand set to ' + demand.value + '% (' + fmt(BASE_MW * state.scale) + ' MW)', 'info');
+    });
+    $('protect').addEventListener('change', function (e) {
+      state.protect = e.target.checked;
+      log('Overload protection ' + (state.protect ? 'on' : 'off'), 'info');
+      evaluate();
+    });
+    $('reset').addEventListener('click', reset);
+    Array.prototype.forEach.call(document.querySelectorAll('[data-scenario]'), function (b) {
+      b.addEventListener('click', function () { applyScenario(b.getAttribute('data-scenario')); });
+    });
+
+    if (mq.addEventListener) mq.addEventListener('change', relayout);
+    else if (mq.addListener) mq.addListener(relayout);
+
+    log('Board ready. All breakers closed, demand 295 MW', 'info');
+    evaluate();
+  }
+
+  init();
+})();
